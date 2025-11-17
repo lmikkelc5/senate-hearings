@@ -1,5 +1,5 @@
 ## URLs
-https://www.congress.gov/senate-hearing-transcripts/117th-congress
+https://www.govinfo.gov/browse/committee
 
 ## Categorical variables
 Congress num: 112th, 117th. These are broken down by year
