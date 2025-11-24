@@ -16,6 +16,7 @@ import pandas as pd
 from bs4 import BeautifulSoup
 import re
 from datetime import datetime
+import requests
 
 # Case-insensitive match for any <a> or <button> whose visible text contains "more"
 X_MORE = (
@@ -125,52 +126,30 @@ def expand_all_toggles(driver, sleep_after_click=0.25) -> None:
 
 BASE = "https://www.govinfo.gov"
 
-def _normalize_date_from_text(text: str):
-    """
-    Find a date like 'July 22, 2009' in text and return:
-        (raw_date_str, 'YYYY-MM-DD') or (None, None)
-    """
-    if not text:
-        return None, None
-
-    m = re.search(r"[A-Z][a-z]+ \d{1,2}, \d{4}", text)
-    if not m:
-        return None, None
-
-    raw = m.group(0)
-    try:
-        dt = datetime.strptime(raw, "%B %d, %Y")
-        return raw, dt.date().isoformat()
-    except ValueError:
-        return raw, None
 
 def extract_hearing_links(html_text: str) -> pd.DataFrame:
     """
-    Extract:
-      - title           : hearing title (best effort)
-      - details_url     : https://www.govinfo.gov/app/details/CHRG-...
-      - text_url        : https://www.govinfo.gov/app/text/CHRG-...
-      - hearing_number  : e.g. 'S. Hrg. 114-123' (if found nearby)
-      - date_raw        : 'Month d, yyyy' from nearby text
-      - date_iso        : normalized 'YYYY-MM-DD'
-      - committee       : committee name if parsable from nearby text
-      - subcommittee    : subcommittee name if parsable from nearby text
-    from a saved govinfo CHRG/committee HTML page.
-    """
+    From a saved govinfo HTML page, extract for each hearing:
 
+      - details_url : https://www.govinfo.gov/app/details/CHRG-...
+      - text_url    : https://www.govinfo.gov/app/text/CHRG-...
+
+    Returns a DataFrame with columns:
+        details_url, text_url
+    """
     soup = BeautifulSoup(html_text, "html.parser")
 
     hearings = []
     seen_ids = set()
 
-    # Find ALL detail links for CHRG hearings
+    # Find all CHRG detail links
     for a in soup.find_all("a", href=True):
         href = a["href"]
 
         if "/app/details/CHRG-" not in href and "/app/details/chrg-" not in href:
             continue
 
-        # Extract the CHRG id, e.g. 'CHRG-119shrg12345'
+        # Extract the CHRG id (e.g. CHRG-119shrg12345)
         m_id = re.search(r"/app/details/([^/?#]+)", href)
         if not m_id:
             continue
@@ -180,96 +159,14 @@ def extract_hearing_links(html_text: str) -> pd.DataFrame:
             continue
         seen_ids.add(chrg_id)
 
-        # ---- DETAILS URL ----
-        details_url = href if href.startswith("http") else f"{BASE}/app/details/{chrg_id}"
-
-        # ---- Locate a reasonable container around this link ----
-        container = a
-        # walk up until we hit a list item / row-like container or a generic div
-        while container.parent is not None and container.name not in ("li", "tr", "div", "section", "article"):
-            container = container.parent
-
-        # Fallback
-        if container is None:
-            container = a.parent
-
-        # Get all text in this container once (for date, hearing number, etc.)
-        text_block = container.get_text(" ", strip=True)
-
-        # ---- TEXT URL ----
-        # Look first inside the same container
-        text_url = None
-        text_link = container.find("a", string=lambda x: x and x.strip().lower() == "text")
-        if text_link and text_link.get("href"):
-            thref = text_link["href"]
-            text_url = thref if thref.startswith("http") else BASE + thref
-        else:
-            # Fallback: guess app/text/<CHRG_ID>
-            text_url = f"{BASE}/app/text/{chrg_id}"
-
-        # ---- TITLE ----
-        # Try to find a nicer title than just 'Details':
-        # 1) Look for a "non-button" <a> in this container whose href points
-        #    to the same CHRG id but text is not 'Details', 'PDF', 'Text'.
-        title = None
-        for a2 in container.find_all("a", href=True):
-            if chrg_id not in a2["href"]:
-                continue
-            t = a2.get_text(strip=True)
-            if t and t.lower() not in ("details", "pdf", "text", "share"):
-                title = t
-                break
-
-        # 2) Fallback: first heading-like tag
-        if not title:
-            heading = container.find(["h1", "h2", "h3", "h4", "h5"])
-            if heading:
-                title = heading.get_text(" ", strip=True)
-
-        # 3) Last fallback: use text_block, but strip button labels
-        if not title:
-            temp = re.sub(r"\b(Details|PDF|Text|Share)\b", "", text_block)
-            title = temp.strip()
-
-        # ---- HEARING NUMBER ----
-        hearing_number = None
-        patterns = [
-            r"\b[SH]\.\s*Hrg\.\s*[0-9A-Za-z\-–]+",        # S. Hrg. 114-123, H. Hrg. 115-12
-            r"\bH\.A\.S\.C\.\s*No\.\s*[0-9A-Za-z\-–]+",   # H.A.S.C. No. ...
-            r"\bS\.\s*Prt\.\s*[0-9A-Za-z\-–]+",           # S. Prt. ...
-        ]
-        for pat in patterns:
-            m_h = re.search(pat, text_block)
-            if m_h:
-                hearing_number = m_h.group(0)
-                break
-
-        # ---- DATE (raw + ISO) ----
-        date_raw, date_iso = _normalize_date_from_text(text_block)
-
-        # ---- COMMITTEE / SUBCOMMITTEE ----
-        committee = None
-        subcommittee = None
-
-        # Try explicit labels if present
-        m_comm = re.search(r"Committee:\s*(.*?)(?:;|$)", text_block)
-        if m_comm:
-            committee = m_comm.group(1).strip() or None
-
-        m_sub = re.search(r"Subcommittee:\s*(.*?)(?:;|$)", text_block)
-        if m_sub:
-            subcommittee = m_sub.group(1).strip() or None
+        # Normalize URLs
+        details_url = f"{BASE}/app/details/{chrg_id}"
+        text_url    = f"{BASE}/app/text/{chrg_id}"
 
         hearings.append(
             {
-                "title":          title,
-                "details_url":    details_url,
-                "text_url":       text_url,
-                "hearing_number": hearing_number,
-                "date_raw":       date_raw,
-                "date_iso":       date_iso,
-                "committee":      committee,
-                "subcommittee":   subcommittee,
+                "details_url": details_url,
+                "text_url": text_url,
             }
         )
 
@@ -277,3 +174,38 @@ def extract_hearing_links(html_text: str) -> pd.DataFrame:
         print("No hearings found in this HTML file (no CHRG detail links).")
 
     return pd.DataFrame(hearings)
+
+def get_session_from_url(url: str) -> str | None:
+    m = re.search(r"CHRG-(\d{3})", url)
+    return m.group(1) if m else None
+
+session = requests.Session()
+session.headers.update({
+    "User-Agent": "Mozilla/5.0"
+})
+
+def get_text(url: str, retries=5):
+    delay = 1
+    for i in range(retries):
+        try:
+            print(f"Fetching: {url}")
+            r = session.get(url, timeout=20)
+            r.raise_for_status()
+            soup = BeautifulSoup(r.text, "html.parser")
+            pre = soup.find("pre")
+            return pre.get_text("\n") if pre else None
+
+        except (requests.exceptions.ConnectionError,
+                requests.exceptions.Timeout) as e:
+            print(f"Connection error: {e} (retrying in {delay}s)")
+            time.sleep(delay)
+            delay *= 2     # exponential backoff
+
+    print("Failed after retries")
+    return None
+    
+def to_html_url(app_text_url: str) -> str:
+    # Grab the last segment: CHRG-119shrg61295
+    pkg = app_text_url.rstrip("/").split("/")[-1]
+    granule = pkg  # main part uses the same ID
+    return f"https://www.govinfo.gov/content/pkg/{pkg}/html/{granule}.htm"
