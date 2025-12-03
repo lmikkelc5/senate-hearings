@@ -209,3 +209,44 @@ def to_html_url(app_text_url: str) -> str:
     pkg = app_text_url.rstrip("/").split("/")[-1]
     granule = pkg  # main part uses the same ID
     return f"https://www.govinfo.gov/content/pkg/{pkg}/html/{granule}.htm"
+
+def get_congress(link: str) -> str:
+    pass
+
+def get_members():
+    pass
+
+def get_witnesses():
+    pass
+
+def get_commitee():
+    pass
+
+def get_date():
+    pass
+
+def get_subtype():
+    pass
+
+def get_hearing_num():
+    pass
+
+def get_category_text(url: str) -> str | None:
+    # Get the page
+    response = requests.get(url, timeout=15)
+    response.raise_for_status()   # throw error if request failed
+
+    # Parse HTML
+    soup = BeautifulSoup(response.text, "html.parser")
+
+    # Find the target div
+    target = soup.find("div", id="tooltip-spanid", attrs={"data-id": "Category"})
+    if not target:
+        return None
+
+    # The value sits in its <p> child
+    p_tag = target.find("p")
+    if not p_tag:
+        return None
+
+    return p_tag.get_text(strip=True)
