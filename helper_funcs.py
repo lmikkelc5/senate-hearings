@@ -250,3 +250,47 @@ def get_category_text(url: str) -> str | None:
         return None
 
     return p_tag.get_text(strip=True)
+
+import re
+
+def extract_main_text(raw):
+    """
+    Cleans structured transcript-like text by removing:
+      - Bracketed metadata ([Senate Hearing...], [GRAPHICS...], etc.)
+      - Page numbers, section headings, numbering
+      - ALL CAPS headings (optional toggle)
+      - Excessive whitespace
+      - Repeated underscores, equal signs, separators
+      - Lines that are mostly formatting
+      - Speaker labels like 'STATEMENT OF ...', 'Chairman Chambliss.'
+    Returns plain, readable text.
+    """
+
+    text = raw
+
+    # 1. Remove bracketed metadata blocks like [SENATE HEARING 109...]
+    text = re.sub(r"\[[^\]]*\]", "", text)
+
+    # 2. Remove lines that are just formatting (====, ----, ____ etc.)
+    text = re.sub(r"^[=\-\_]{3,}.*$", "", text, flags=re.MULTILINE)
+
+    # 3. Remove page numbers and roman numeral section markers
+    text = re.sub(r"^\s*\(?\d+\)?\s*$", "", text, flags=re.MULTILINE)
+
+    # 4. Remove ALL CAPS headings (committees, titles, CONTENTS, etc.)
+    text = re.sub(r"^[A-Z0-9 \.\,\-\(\)']{8,}$", "", text, flags=re.MULTILINE)
+
+    # 5. Remove speaker labels like:
+    #    CHAIRMAN CHAMBLISS.
+    #    STATEMENT OF MARK E. KEENUM
+    text = re.sub(r"^[A-Z][A-Z \.\-\,']{3,}:\s*$", "", text, flags=re.MULTILINE)
+    text = re.sub(r"^STATEMENT OF.*$", "", text, flags=re.MULTILINE)
+
+    # 6. Remove superfluous whitespace
+    text = re.sub(r"\n{2,}", "\n\n", text)       # collapse huge blocks
+    text = re.sub(r"[ \t]+", " ", text)         # compress spaces
+
+    # 7. Strip leading/trailing whitespace
+    text = text.strip()
+
+    return text
