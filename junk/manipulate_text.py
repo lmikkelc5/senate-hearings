@@ -1,7 +1,7 @@
 import pandas as pd
 import helper_funcs
 
-sessions = [119, 118] #, 117, 116, 115, 114, 113, 112, 111, 110, 109, 108, 107, 106, 105, 104]
+sessions = [119, 118] #, 117, 116, 115, 114, 113, 112, 111, 110, 109, 108, 107, 106, 105, 104] 69
 
 #add loop
 for session in sessions:
