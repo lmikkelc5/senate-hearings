@@ -253,12 +253,14 @@ def get_category_text(url: str) -> str | None:
 
 import re
 
-def extract_main_text(raw):
+import re
+
+def extract_main_text(raw, remove_all_caps_headings=False):
     """
     Cleans structured transcript-like text by removing:
       - Bracketed metadata ([Senate Hearing...], [GRAPHICS...], etc.)
       - Page numbers, section headings, numbering
-      - ALL CAPS headings (optional toggle)
+      - (Optionally) ALL CAPS headings
       - Excessive whitespace
       - Repeated underscores, equal signs, separators
       - Lines that are mostly formatting
@@ -277,8 +279,10 @@ def extract_main_text(raw):
     # 3. Remove page numbers and roman numeral section markers
     text = re.sub(r"^\s*\(?\d+\)?\s*$", "", text, flags=re.MULTILINE)
 
-    # 4. Remove ALL CAPS headings (committees, titles, CONTENTS, etc.)
-    text = re.sub(r"^[A-Z0-9 \.\,\-\(\)']{8,}$", "", text, flags=re.MULTILINE)
+    # 4. (OPTIONAL) Remove ALL CAPS headings (committees, titles, CONTENTS, etc.)
+    # This is what was killing your screenshot block. Only run it if requested.
+    if remove_all_caps_headings:
+        text = re.sub(r"^[A-Z0-9 \.\,\-\(\)']{8,}$", "", text, flags=re.MULTILINE)
 
     # 5. Remove speaker labels like:
     #    CHAIRMAN CHAMBLISS.
@@ -294,3 +298,9 @@ def extract_main_text(raw):
     text = text.strip()
 
     return text
+
+def get_date(text):
+    pattern = re.compile(
+    r"\b(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},\s+\d{4}\b")
+    matches = pattern.findall(text)
+    return matches[0]
