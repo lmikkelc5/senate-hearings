@@ -303,4 +303,27 @@ def get_date(text):
     pattern = re.compile(
     r"\b(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},\s+\d{4}\b")
     matches = pattern.findall(text)
+    if len(matches) == 0:
+        return None
+    
     return matches[0]
+
+def extract_hearing_title(raw_text):
+    """
+    Extracts hearing titles consisting of one or more consecutive ALL-CAPS lines.
+    Returns the full multi-line title block.
+    """
+
+    # Match one or more ALL-CAPS lines in a row
+    pattern = re.compile(
+        r"(?:^[A-Z0-9\.\-· \u00b7,'&]{10,}$\n?)+",
+        re.MULTILINE
+    )
+
+    match = pattern.search(raw_text)
+    if not match:
+        return None
+
+    # Clean up trailing newline
+    return match.group(0).strip().replace("\n", "")
+
