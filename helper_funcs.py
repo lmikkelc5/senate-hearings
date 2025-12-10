@@ -333,7 +333,15 @@ def get_month(date):
 
 def get_day(date):
     date = str(date)
-    pattern = re.compile(r"(/d{1,2})")
+    pattern = re.compile(r"(\d{1,2})")
+    match = pattern.search(date)
+    if match:
+        return int(match.group(1))
+    return 'na'
+
+def get_year(date):
+    date = str(date)
+    pattern = re.compile(r"(\d{4})")
     match = pattern.search(date)
     if match:
         return int(match.group(1))
