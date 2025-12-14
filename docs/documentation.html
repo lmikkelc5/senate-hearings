@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>get_html – Senate Hearings Project</title>
+<title>documentation – Senate Hearings Project</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,41 +19,6 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
-}
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -130,6 +95,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="nav-link" href="./index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="./documentation.html" aria-current="page"> 
+<span class="menu-text">Documentatio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./technical_report.html"> 
+<span class="menu-text">Technical Report</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./tutorial.html"> 
+<span class="menu-text">Tutorial</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -150,135 +127,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<p>Imports</p>
-<div id="f1143398" class="cell" data-execution_count="2">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> bs4 <span class="im">import</span> BeautifulSoup</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> re</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> helper_funcs <span class="im">import</span> get_fully_expanded_html</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<p>Get response</p>
-<div id="4cc90e95" class="cell" data-execution_count="3">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">'https://www.govinfo.gov/browse/committee'</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> requests.get(url)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>r.status_code</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="3">
-<pre><code>200</code></pre>
-</div>
-</div>
-<div id="aa4336c0" class="cell" data-execution_count="4">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#create soup</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>soup <span class="op">=</span> BeautifulSoup(r.content)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>base_url <span class="op">=</span> <span class="st">'https://www.govinfo.gov'</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#find all senate commitee pages</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>divs <span class="op">=</span> soup.find_all(<span class="st">'div'</span>, <span class="bu">id</span> <span class="op">=</span> <span class="st">'senate-col'</span>)</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>links <span class="op">=</span> []</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>links <span class="op">=</span> divs[<span class="dv">0</span>].find_all(<span class="st">'a'</span>)</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">#create dictionary of links and committee name</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>page_links <span class="op">=</span> {<span class="st">'committee_name'</span>:[], <span class="st">'url'</span>:[]}</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> link <span class="kw">in</span> links:</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    committee <span class="op">=</span> link.text</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    page_links[<span class="st">'committee_name'</span>].append(committee)</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    partial_url <span class="op">=</span> link[<span class="st">'href'</span>]</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    page_links[<span class="st">'url'</span>].append(base_url <span class="op">+</span> partial_url)</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(page_links)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>{'committee_name': ['Agriculture, Nutrition &amp; Forestry', 'Appropriations', 'Armed Services', 'Banking, Housing, and Urban Affairs', 'Budget', 'Commerce, Science, and Transportation', 'Energy and Natural Resources', 'Environment and Public Works', 'Finance', 'Foreign Relations', 'Health, Education, Labor and Pensions', 'Homeland Security and Governmental Affairs', 'Indian Affairs', 'Judiciary', 'Rules and Administration', 'Small Business and Entrepreneurship', "Veterans' Affairs", 'Impeachment Trial Committee', 'Select Committee on Ethics', 'Select Committee on Intelligence', 'Special Committee on Aging', 'Special Committee on the Y2K Technology Problem', 'Caucus on International Narcotics Control'], 'url': ['https://www.govinfo.gov/committee/senate-agriculture', 'https://www.govinfo.gov/committee/senate-appropriations', 'https://www.govinfo.gov/committee/senate-armedservices', 'https://www.govinfo.gov/committee/senate-banking', 'https://www.govinfo.gov/committee/senate-budget', 'https://www.govinfo.gov/committee/senate-commerce', 'https://www.govinfo.gov/committee/senate-energy', 'https://www.govinfo.gov/committee/senate-environment', 'https://www.govinfo.gov/committee/senate-finance', 'https://www.govinfo.gov/committee/senate-foreignrelations', 'https://www.govinfo.gov/committee/senate-health', 'https://www.govinfo.gov/committee/senate-homeland', 'https://www.govinfo.gov/committee/senate-indianaffairs', 'https://www.govinfo.gov/committee/senate-judiciary', 'https://www.govinfo.gov/committee/senate-rules', 'https://www.govinfo.gov/committee/senate-smbusiness', 'https://www.govinfo.gov/committee/senate-va', 'https://www.govinfo.gov/committee/senate-impeach', 'https://www.govinfo.gov/committee/senate-ethics', 'https://www.govinfo.gov/committee/senate-intelligence', 'https://www.govinfo.gov/committee/senate-aging', 'https://www.govinfo.gov/committee/senate-y2k', 'https://www.govinfo.gov/committee/senate-drugcaucus']}</code></pre>
-</div>
-</div>
-<div id="84e663ae" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#loop through each link and access the page </span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>links <span class="op">=</span> page_links[<span class="st">'url'</span>]</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(links)</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>count <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> link <span class="kw">in</span> links:</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">#get url and soup</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    url <span class="op">=</span> link</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(url)</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    committee <span class="op">=</span> page_links[<span class="st">'committee_name'</span>][count]</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">#use helper functions</span></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    html <span class="op">=</span> get_fully_expanded_html(url, headless<span class="op">=</span><span class="va">False</span>, save_to<span class="op">=</span><span class="ss">f"senate_html/</span><span class="sc">{</span>committee<span class="sc">.</span>lower()<span class="sc">}</span><span class="ss">.html"</span>)</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    count <span class="op">+=</span> <span class="dv">1</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(count)</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>['https://www.govinfo.gov/committee/senate-agriculture', 'https://www.govinfo.gov/committee/senate-appropriations', 'https://www.govinfo.gov/committee/senate-armedservices', 'https://www.govinfo.gov/committee/senate-banking', 'https://www.govinfo.gov/committee/senate-budget', 'https://www.govinfo.gov/committee/senate-commerce', 'https://www.govinfo.gov/committee/senate-energy', 'https://www.govinfo.gov/committee/senate-environment', 'https://www.govinfo.gov/committee/senate-finance', 'https://www.govinfo.gov/committee/senate-foreignrelations', 'https://www.govinfo.gov/committee/senate-health', 'https://www.govinfo.gov/committee/senate-homeland', 'https://www.govinfo.gov/committee/senate-indianaffairs', 'https://www.govinfo.gov/committee/senate-judiciary', 'https://www.govinfo.gov/committee/senate-rules', 'https://www.govinfo.gov/committee/senate-smbusiness', 'https://www.govinfo.gov/committee/senate-va', 'https://www.govinfo.gov/committee/senate-impeach', 'https://www.govinfo.gov/committee/senate-ethics', 'https://www.govinfo.gov/committee/senate-intelligence', 'https://www.govinfo.gov/committee/senate-aging', 'https://www.govinfo.gov/committee/senate-y2k', 'https://www.govinfo.gov/committee/senate-drugcaucus']
-https://www.govinfo.gov/committee/senate-agriculture
-1
-https://www.govinfo.gov/committee/senate-appropriations
-2
-https://www.govinfo.gov/committee/senate-armedservices
-3
-https://www.govinfo.gov/committee/senate-banking
-4
-https://www.govinfo.gov/committee/senate-budget
-5
-https://www.govinfo.gov/committee/senate-commerce
-6
-https://www.govinfo.gov/committee/senate-energy
-7
-https://www.govinfo.gov/committee/senate-environment
-8
-https://www.govinfo.gov/committee/senate-finance
-9
-https://www.govinfo.gov/committee/senate-foreignrelations
-10
-https://www.govinfo.gov/committee/senate-health
-11
-https://www.govinfo.gov/committee/senate-homeland
-12
-https://www.govinfo.gov/committee/senate-indianaffairs
-13
-https://www.govinfo.gov/committee/senate-judiciary
-14
-https://www.govinfo.gov/committee/senate-rules
-15
-https://www.govinfo.gov/committee/senate-smbusiness
-16
-https://www.govinfo.gov/committee/senate-va
-17
-https://www.govinfo.gov/committee/senate-impeach
-18
-https://www.govinfo.gov/committee/senate-ethics
-19
-https://www.govinfo.gov/committee/senate-intelligence
-20
-https://www.govinfo.gov/committee/senate-aging
-21
-https://www.govinfo.gov/committee/senate-y2k
-22
-https://www.govinfo.gov/committee/senate-drugcaucus
-23</code></pre>
-</div>
-</div>
-<div id="8531d6e8" class="cell" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># keys_to_keep = list(page_links.keys())[:-6]</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># new_dict = {key: page_links[key] for key in keys_to_keep}</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># congress_sessions = ['119', '118', '117', '116', '115', '114', '113', '112', '111', '110', '109', '108', '107']</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co"># names = ['agriculture', 'appropriations', 'armedservices','banking','budget', 'commerce', 'energy', 'environment', 'finance', 'foreignrelations', 'health', 'homeland', 'indianaffairs', 'judiciary', 'rules', 'smbusiness', 'va']</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co"># count = 0</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co"># for link in page_links['url']:</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">#     add_on = f'?path=/browsecommittee/chamber/senate/committee/{names[count]}/collection/CHRG'</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co">#     url = link + add_on</span></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co">#     for session in congress_sessions:</span></span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co">#         time.sleep(1)</span></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co">#         congress_link = f'{url}/congress/{session}'</span></span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co">#         resp = requests.get(congress_link)</span></span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co">#         print(congress_link)</span></span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co">#         print(resp.status_code)</span></span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co">#         print(resp.text)</span></span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co">#     time.sleep(1)</span></span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="co">#     count += 1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
 
 
 
