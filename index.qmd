@@ -1,0 +1,9 @@
+---
+title: "Senate Hearings Analysis"
+---
+
+Welcome to my STAT 386 project.
+
+- Data scraped from U.S. Senate hearings
+- Cleaned using Python
+- Analyzed and documented here

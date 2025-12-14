@@ -1,0 +1,15 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "Senate Hearings Project"
+  navbar:
+    left:
+      - text: Home
+        href: index.qmd
+
+format:
+  html:
+    theme: cosmo
+    toc: true
