@@ -2,8 +2,9 @@
 title: "Senate Hearings Analysis"
 ---
 
-Welcome to my STAT 386 project.
+# Senate Hearings package
 
-- Data scraped from U.S. Senate hearings
-- Cleaned using Python
-- Analyzed and documented here
+
+- Built to help scrape data from https://www.govinfo.gov/browse/committee
+- Also includes functions to clean data
+- Attached is a demo and the documentation for this package
