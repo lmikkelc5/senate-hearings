@@ -10,7 +10,7 @@ website:
     left:
       - text: Home
         href: index.qmd
-      - text: Documentatio
+      - text: Documentation
         href: documentation.qmd
       - text: Technical Report
         href: technical_report.qmd
