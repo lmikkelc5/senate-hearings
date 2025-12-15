@@ -1,5 +1,5 @@
 import pandas as pd
-import helper_funcs
+import src.helper_funcs as helper_funcs
 
 df = pd.read_csv("data/senate_data.csv")
 
