@@ -263,28 +263,6 @@ ax_bar.set_xlabel("Count")
 ax_bar.set_ylabel("Keyword")
 st.pyplot(fig_bar)
 
-# Co-occurrence heatmap (Top 20)
-st.write("Keyword co-occurrence heatmap (top 20 keywords):")
-M = 20
-topM = kw_exploded["clean_kws"].value_counts().head(M).index.tolist()
-co_counts = {(a, b): 0 for a in topM for b in topM}
-for kws in all_df["clean_kws"]:
-	if not isinstance(kws, list):
-		continue
-	kws = [k for k in set(kws) if k in topM]
-	for a, b in combinations(sorted(kws), 2):
-		co_counts[(a, b)] += 1
-		co_counts[(b, a)] += 1
-	for k in kws:
-		co_counts[(k, k)] += 1
-mat = pd.DataFrame(index=topM, columns=topM, data=0)
-for (a, b), v in co_counts.items():
-	mat.at[a, b] = v
-fig_co, ax_co = plt.subplots(figsize=(12, 10))
-sns.heatmap(mat, cmap="Blues", linewidths=0.5, ax=ax_co)
-ax_co.set_title(f"Keyword Co-occurrence (Top {M})")
-st.pyplot(fig_co)
-
 # Correlations for top 10 keywords
 st.write("Correlation heatmaps for top 10 keywords:")
 all_kws_series = pd.Series([
@@ -334,11 +312,8 @@ corr_top_df = pd.DataFrame(
 	sorted(corr_pairs, key=lambda x: x[2], reverse=True),
 	columns=["keyword_a", "keyword_b", "pearson"],
 ).head(15)
-col_p1, col_p2 = st.columns((2, 1))
-with col_p1:
-	st.pyplot(fig_corr)
-with col_p2:
-	st.dataframe(corr_top_df, use_container_width=True)
+st.pyplot(fig_corr)
+st.dataframe(corr_top_df, use_container_width=True)
 
 # Normalized PMI: heatmap + table side-by-side
 n_docs = len(presence)
@@ -380,11 +355,8 @@ npmi_top_df = pd.DataFrame(
 	sorted(npmi_pairs, key=lambda x: x[2], reverse=True),
 	columns=["keyword_a", "keyword_b", "npmi"],
 ).head(15)
-col_n1, col_n2 = st.columns((2, 1))
-with col_n1:
-	st.pyplot(fig_npmi)
-with col_n2:
-	st.dataframe(npmi_top_df, use_container_width=True)
+st.pyplot(fig_npmi)
+st.dataframe(npmi_top_df, use_container_width=True)
 
 # Phi (binary Pearson) heatmap (kept below; no table needed)
 phi = corr.copy()
