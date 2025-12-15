@@ -21,16 +21,36 @@ all_df = load_processed("data/cleaned/all_sessions_keywords_filtered.csv")
 all_df["date"] = pd.to_datetime(all_df["date"], errors="coerce")
 all_df = all_df.dropna(subset=["date"])  # rows with NaT dates removed
 
-keyword = st.text_input("Enter a keyword (case-insensitive)", value="USDA")
+# Limit analysis to 2023 through current date
+min_date = pd.Timestamp(2023, 1, 1)
+max_date = pd.Timestamp.today().normalize()
+all_df = all_df[(all_df["date"] >= min_date) & (all_df["date"] <= max_date)]
+
+# Build top-20 keyword list from kw_1..kw_10 across filtered data
+kw_cols = [c for c in all_df.columns if c.startswith("kw_")]
+top_kw_series = (
+    all_df[kw_cols]
+    .astype(str)
+    .apply(lambda col: col.str.strip().str.lower())
+    .stack()
+    .replace({"nan": pd.NA})
+    .dropna()
+    .value_counts()
+)
+top_keywords = top_kw_series.head(20).index.tolist()
+
+# Keyword inputs
+suggested = st.selectbox("Top keywords (EDA-style)", ["(choose)"] + top_keywords, index=0)
+keyword = st.text_input("Or enter a keyword (case-insensitive)", value="USDA")
 match_type = st.radio("Match type", ["contains", "exact"], index=0)
 granularity = st.selectbox("Time granularity", ["Day", "Month", "Year"], index=1)
 
-if keyword:
-	# Normalize keyword for matching
-	needle = keyword.strip().lower()
+# Prefer manual entry; otherwise use dropdown selection
+active_keyword = keyword.strip() if keyword.strip() else (suggested if suggested != "(choose)" else "")
 
-	# Collect top-kw columns for matching
-	kw_cols = [c for c in all_df.columns if c.startswith("kw_")]
+if active_keyword:
+	# Normalize keyword for matching
+	needle = active_keyword.lower()
 
 	# Build a boolean match per row across kw_1..kw_10 and the aggregated 'keywords' text
 	def row_matches(row):
