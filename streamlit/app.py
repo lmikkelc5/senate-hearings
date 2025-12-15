@@ -290,7 +290,13 @@ def upper_triangle_pairs(mat_df: pd.DataFrame):
 	return pairs
 
 
-# Pearson correlation: heatmap + table side-by-side
+# Pearson correlation: interpretation + heatmap and table
+corr_interp = (
+	"Pearson correlation: measures linear correlation of binary presence per keyword. "
+	"Range [-1, 1]: 1 = always together, 0 = independent, -1 = never together. "
+	"Common keywords can inflate values; compare with NPMI for robustness."
+)
+st.markdown(corr_interp)
 corr = presence.corr(method="pearson")
 mask_corr = np.triu(np.ones_like(corr, dtype=bool), k=1)
 fig_corr, ax_corr = plt.subplots(figsize=(10, 8))
@@ -315,7 +321,13 @@ corr_top_df = pd.DataFrame(
 st.pyplot(fig_corr)
 st.dataframe(corr_top_df, use_container_width=True)
 
-# Normalized PMI: heatmap + table side-by-side
+# Normalized PMI: interpretation + heatmap and table
+npm_interp = (
+	"NPMI: how much two keywords co-occur beyond chance, normalized to [-1, 1]. "
+	"1 = strong association, 0 ≈ chance, negative = co-occur less than expected. "
+	"More robust to popularity than Pearson; prefer pairs with adequate support."
+)
+st.markdown(npm_interp)
 n_docs = len(presence)
 p = presence.sum(axis=0) / n_docs
 joint = (presence.T @ presence) / n_docs
@@ -358,7 +370,12 @@ npmi_top_df = pd.DataFrame(
 st.pyplot(fig_npmi)
 st.dataframe(npmi_top_df, use_container_width=True)
 
-# Phi (binary Pearson) heatmap (kept below; no table needed)
+# Phi (binary Pearson): interpretation + heatmap (no table)
+phi_interp = (
+	"Phi coefficient: Pearson correlation specialized for binary variables; "
+	"numerically identical to Pearson here. Use as a quick confirmation."
+)
+st.markdown(phi_interp)
 phi = corr.copy()
 mask_phi = np.triu(np.ones_like(phi, dtype=bool), k=1)
 fig_phi, ax_phi = plt.subplots(figsize=(10, 8))
