@@ -1,7 +1,264 @@
 # Documentation
 
-## General Info
 
-## Documentation
 
-### Functions
+## Functions
+
+#### is_banned_candidate
+Description
+
+Determines whether a candidate keyword phrase should be excluded from further consideration.
+
+A candidate is considered banned if it contains:
+
+Any substring from a predefined list of banned terms, or
+
+Any person name from a provided set
+
+All checks are performed in a case-insensitive manner. This function is typically used early in the pipeline to remove inappropriate or unwanted keyword phrases.
+
+Parameters
+
+c (str)
+
+Candidate keyword phrase to evaluate.
+
+banned_substrings (list[str])
+
+List of substrings that should not appear in valid keywords.
+
+person_names (set[str])
+
+Set of person names that should be excluded if found in a candidate.
+
+Returns
+
+bool
+
+Returns True if the candidate should be banned, otherwise False.
+
+Examples
+```{python, eval=FALSE}
+is_banned_candidate(
+    c="john doe analysis",
+    banned_substrings=["spam"],
+    person_names={"john doe"}
+)
+# True
+is_banned_candidate(
+    c="machine learning",
+    banned_substrings=["spam"],
+    person_names=set()
+)
+# False
+```
+
+#### mmr_select
+Description
+
+Selects a subset of candidate keywords using Maximal Marginal Relevance (MMR).
+
+MMR balances:
+
+Relevance of each candidate to the document, and
+
+Diversity relative to keywords that have already been selected
+
+This approach helps avoid redundant keywords while still prioritizing semantic relevance. Similarity calculations are based on vector dot products (cosine similarity when embeddings are normalized).
+
+Parameters
+
+doc_emb (numpy.ndarray)
+
+Embedding vector representing the document.
+
+cand_embs (numpy.ndarray)
+
+2D array of candidate keyword embeddings with shape (n_candidates, embedding_dim).
+
+candidates (list[str])
+
+Candidate keyword phrases corresponding to the embedding rows.
+
+top_n (int, default = 10)
+
+Number of keywords to select.
+
+lambda_param (float, default = 0.7)
+
+Trade-off parameter between relevance and diversity:
+
+Values closer to 1 emphasize relevance
+
+Values closer to 0 emphasize diversity
+
+Returns
+
+list[str]
+
+List of selected keyword phrases in selection order.
+
+Examples
+```{python, eval=FALSE}
+doc_emb = np.array([1.0, 0.0])
+cand_embs = np.array([
+    [1.0, 0.0],
+    [0.9, 0.1],
+    [0.0, 1.0]
+])
+candidates = ["ai", "machine learning", "biology"]
+
+
+mmr_select(doc_emb, cand_embs, candidates, top_n=2)
+# ['ai', 'machine learning']
+```
+
+#### normalize_keyword
+Description
+
+Normalizes a keyword to a canonical representation using a lookup dictionary.
+
+This function is useful for consolidating multiple surface forms (e.g., abbreviations or capitalization variants) into a single standardized keyword.
+
+Parameters
+
+k (str)
+
+Keyword to normalize.
+
+normalize_map (dict[str, str])
+
+Dictionary mapping lowercase keyword variants to their canonical forms.
+
+Returns
+
+str
+
+Normalized keyword if a mapping exists; otherwise, the original keyword.
+
+Examples
+```{python, eval=FALSE}
+normalize_map = {
+    "ai": "artificial intelligence",
+    "ml": "machine learning"
+}
+
+
+normalize_keyword("AI", normalize_map)
+# 'artificial intelligence'
+normalize_keyword("statistics", normalize_map)
+# 'statistics'
+```
+
+#### filter_and_normalize_keywords
+Description
+
+Filters, normalizes, and formats a list of keywords into a final output structure.
+
+This function performs the following steps:
+
+Removes banned keywords using is_banned_candidate
+
+Normalizes remaining keywords using normalize_keyword
+
+Trims the list to a target size (top_n)
+
+Pads the list with empty strings if fewer than top_n remain
+
+Produces both a list representation and a semicolon-separated string
+
+Parameters
+
+kws (list[str])
+
+Raw list of keyword strings.
+
+banned_substrings (list[str])
+
+Substrings that should be excluded.
+
+person_names (set[str])
+
+Person names to filter out.
+
+normalize_map (dict[str, str])
+
+Dictionary mapping keyword variants to canonical forms.
+
+top_n (int, default = 10)
+
+Target number of keywords in the output.
+
+Returns
+
+tuple
+
+keywords_str (str): Semicolon-separated string of non-empty keywords
+
+keywords_list (list[str]): List of keywords padded with empty strings to length top_n
+
+Examples
+```{python, eval=FALSE}
+kws = ["AI", "John Doe", "ML", "Data Science"]
+banned_substrings = []
+person_names = {"john doe"}
+normalize_map = {
+    "ai": "artificial intelligence",
+    "ml": "machine learning"
+}
+
+
+filter_and_normalize_keywords(
+    kws,
+    banned_substrings,
+    person_names,
+    normalize_map,
+    top_n=3
+)
+# ('artificial intelligence; machine learning; Data Science',
+#  ['artificial intelligence', 'machine learning', 'Data Science'])
+```
+
+#### trim_candidates_by_frequency
+Description
+
+Trims a list of candidate keyword phrases based on their overall frequency in a corpus.
+
+Candidate phrases are ranked by total frequency across all documents, and only the most frequent phrases are retained. This is commonly used to reduce the candidate set before embedding or MMR selection.
+
+Parameters
+
+candidates (list[str])
+
+Candidate keyword phrases.
+
+X (scipy.sparse matrix)
+
+Document-term matrix (e.g., output of CountVectorizer). Columns correspond to candidates.
+
+max_candidates (int)
+
+Maximum number of candidates to retain.
+
+Returns
+
+list[str]
+
+Trimmed list of candidate phrases sorted by descending frequency.
+
+Examples
+
+```{python, eval=FALSE}
+from scipy.sparse import csr_matrix
+
+
+candidates = ["ai", "ml", "statistics"]
+X = csr_matrix([
+[3, 1, 0],
+[2, 0, 1]
+])
+
+
+trim_candidates_by_frequency(candidates, X, max_candidates=2)
+# ['ai', 'ml']
+```
