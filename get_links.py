@@ -7,7 +7,7 @@ from helper_funcs import extract_hearing_links
 import glob
 
 all_dfs = []
-list_of_html_files = glob.glob("senate_html/*.html")
+list_of_html_files = glob.glob("data/senate_html/*.html")
 
 for file in list_of_html_files:
     with open(file, "r", encoding="utf-8") as f:
@@ -20,4 +20,4 @@ for file in list_of_html_files:
 final_df = pd.concat(all_dfs, ignore_index=True)
 print(final_df)
 
-final_df.to_csv("senate_data.csv", index=False)
+final_df.to_csv("data/senate_data.csv", index=False)

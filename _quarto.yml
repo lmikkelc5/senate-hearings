@@ -2,7 +2,7 @@ project:
   type: website
   output-dir: docs
   render:
-    - "*.qmd"
+    - site/*.qmd
 
 website:
   title: "Senate Hearings Project"

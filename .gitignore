@@ -1,5 +1,7 @@
 senate_data_with_text.csv
-
+__pycache__/
+.venv/
+.quarto/
 
 /.quarto/
 **/*.quarto_ipynb

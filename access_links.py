@@ -1,7 +1,7 @@
 import pandas as pd
 import helper_funcs
 
-df = pd.read_csv("senate_data.csv")
+df = pd.read_csv("data/senate_data.csv")
 
 #add the session column
 df["session"] = df["details_url"].apply(helper_funcs.get_session_from_url)
@@ -16,6 +16,6 @@ df["text_url"] = df["text_url"].apply(helper_funcs.to_html_url)
 #add the text column
 df['text'] = df['text_url'].apply(helper_funcs.get_text)
 
-df.to_csv("senate_data_with_text.csv", index=False)
+df.to_csv("data/senate_data_with_text.csv", index=False)
 
 
