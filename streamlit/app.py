@@ -1,6 +1,8 @@
 import sys
 from pathlib import Path
-
+SITE_DIR = Path(__file__).resolve().parent
+sys.path.insert(0, str(SITE_DIR))
+from senate_hearings import helper_funcs
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 
 import streamlit as st
@@ -10,15 +12,13 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from itertools import combinations
 
-from src.data import load_processed
-
 
 # ---------- Page Title ----------
 st.title("Senate Hearings Explorer")
 
 
 # ---------- Load Data ----------
-all_df = load_processed("data/cleaned/all_sessions_keywords_filtered.csv")
+all_df = helper_funcs.load_processed("data/cleaned/all_sessions_keywords_filtered.csv")
 
 # Ensure date is parsed; drop invalid dates
 all_df["date"] = pd.to_datetime(all_df["date"], errors="coerce")

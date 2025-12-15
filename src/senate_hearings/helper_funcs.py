@@ -372,3 +372,6 @@ def get_year(date):
     if match:
         return int(match.group(1))
     return 'na'
+
+def load_processed(path: str) -> pd.DataFrame:
+    return pd.read_csv(path)
