@@ -1,6 +1,5 @@
 # Fast, filtered keyword extraction across multiple sessions
 # - bans generic addressing phrase(s) like 'senate committee'
-# - removes any candidate phrases that reference PERSON named entities
 # - outputs a single aggregated CSV with columns: session,date,month,day,year,title,keywords,kw_1..kw_10
 
 import os
@@ -13,21 +12,7 @@ from tqdm import tqdm
 from sentence_transformers import SentenceTransformer
 from sklearn.feature_extraction.text import CountVectorizer
 
-# NER for person detection (spaCy)
-try:
-    import spacy
-    try:
-        nlp = spacy.load("en_core_web_sm")
-    except Exception:
-        import spacy.cli
-        print('Downloading spaCy small English model (en_core_web_sm)')
-        spacy.cli.download('en_core_web_sm')
-        nlp = spacy.load("en_core_web_sm")
-except Exception as e:
-    nlp = None
-    print('spaCy not available. Person-name filtering will be disabled. To enable, install spaCy and the en_core_web_sm model:')
-    print('  pip install spacy')
-    print('  python -m spacy download en_core_web_sm')
+# Note: spaCy person-entity filtering removed to preserve relevant names.
 
 # Parameters
 sessions = [119, 118]  # adjust as needed
@@ -50,12 +35,13 @@ banned_substrings = [
     'opening statement', 'testimony', 'testified', 'chairman', 'ranking member', 'senator',
     'representative', 'congressman', 'congresswoman', 'good morning', 'good afternoon',
     'thank you', 'distinguished', 'witness', 'panel', 'hearing adjourned', 'hearing today', 'today hearing',
-    'chair durbin', 'questions chair', 'chief counsel',
+    'chair durbin', 'questions chair', 'chief counsel', 'commissioner', 'fcc commissioner', 'testify today',
     # structural/location/date/document noise
     'senate', 'states senate', 'congress session', 'eighteenth congress', 'congress',
     '2023 senate', '2024 budget', 'senate office', 'senate eighteenth', 'hearings',
     'congressional', 'pdf washington', 'dc committee', 'act 2023', 'gov document', 'docs fcc', 'statement fcc',
-    'board directors', 'briefing', 'justices', 'government publishing',
+    'board directors', 'briefing', 'justices', 'government publishing', 'authorization act',
+    'science act', 'prepared statement', 'written statement', 'report',
     # staffing / persons / roles and generic terms
     'republican staff', 'chair warren', 'document fcc', 'filing', 'secretary state', 'judiciary', 'policymakers',
     'menendez', 'sanders', 'murkowski',
@@ -121,23 +107,8 @@ for session in sessions:
     df = pd.read_csv(inpath)
     docs = (df['title'].fillna('') + '\n' + df['text'].fillna('')).astype(str).tolist()
 
-    # Extract person names with spaCy (if available) - process in smaller batches to avoid memory issues
+    # Person-name filtering disabled (previously used spaCy NER)
     person_names = set()
-    if nlp is not None:
-        print('Extracting person names with spaCy (batched)...')
-        batch_size = 50  # Process 50 documents at a time
-        for i in range(0, len(docs), batch_size):
-            batch = docs[i:i+batch_size]
-            for doc in nlp.pipe(batch, disable=["parser", "tagger", "tok2vec", "lemmatizer"], batch_size=10):
-                for ent in doc.ents:
-                    if ent.label_ == 'PERSON':
-                        person_names.add(ent.text.strip().lower())
-    else:
-        # fallback: no person filtering
-        person_names = set()
-
-    if person_names:
-        print(f'Found {len(person_names)} PERSON names to ban (sample):', list(person_names)[:5])
 
     # Build candidate phrases for this session
     vectorizer = CountVectorizer(ngram_range=ngram_range, stop_words='english')
