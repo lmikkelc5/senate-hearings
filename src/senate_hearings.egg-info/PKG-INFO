@@ -1,0 +1,39 @@
+Metadata-Version: 2.4
+Name: senate-hearings
+Version: 0.1.0
+Summary: Scrape and clean U.S. Senate hearing transcripts.
+Author: Mikkel Christensen, Corbin Brinkerhoff
+License: MIT
+Project-URL: Homepage, https://github.com/lmikkelc5/senate-hearings
+Keywords: scraping,nlp,senate,transcripts,streamlit,quarto
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: beautifulsoup4>=4.12.0
+Requires-Dist: ipykernel>=7.1.0
+Requires-Dist: nbclient>=0.10.2
+Requires-Dist: nbformat>=5.10.4
+Requires-Dist: numpy>=2.3.4
+Requires-Dist: pandas>=2.3.3
+Requires-Dist: playwright>=1.55.0
+Requires-Dist: requests>=2.32.5
+Requires-Dist: selenium>=4.38.0
+Provides-Extra: dev
+Requires-Dist: ipykernel>=7.1.0; extra == "dev"
+Requires-Dist: spacy>=3.8.11; extra == "dev"
+Requires-Dist: sentence-transformers>=5.2.0; extra == "dev"
+Requires-Dist: streamlit>=1.52.1; extra == "dev"
+
+## URLs
+https://www.govinfo.gov/browse/committee
+
+## Categorical variables
+Congress num: 112th, 117th. These are broken down by year
+Commitee: Armed Services, Foreign relations
+Year: possibly use the congress number though. They are broken down into years by congress
+
+## Data Frame layout(hesitant)
+
+Index - Congress - Commitee - Month - Day - Year - Subcommitee - Topic/Title - Text
+
+## \robots.txt
+

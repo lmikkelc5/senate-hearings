@@ -39,6 +39,8 @@ Returns True if the candidate should be banned, otherwise False.
 
 Examples
 ```{python, eval=FALSE}
+from senate_hearings.keybert_funcs import *
+
 is_banned_candidate(
     c="john doe analysis",
     banned_substrings=["spam"],

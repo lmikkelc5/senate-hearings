@@ -20,6 +20,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -123,35 +158,231 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#documentation" id="toc-documentation" class="nav-link active" data-scroll-target="#documentation">Documentation</a>
-  <ul class="collapse">
-  <li><a href="#general-info" id="toc-general-info" class="nav-link" data-scroll-target="#general-info">General Info</a></li>
-  <li><a href="#documentation-1" id="toc-documentation-1" class="nav-link" data-scroll-target="#documentation-1">Documentation</a>
-  <ul class="collapse">
-  <li><a href="#functions" id="toc-functions" class="nav-link" data-scroll-target="#functions">Functions</a></li>
-  </ul></li>
-  </ul></li>
+  <li><a href="#functions" id="toc-functions" class="nav-link active" data-scroll-target="#functions">Functions</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Documentation</h1>
+</div>
 
 
 
+<div class="quarto-title-meta">
 
-<section id="documentation" class="level1">
-<h1>Documentation</h1>
-<section id="general-info" class="level2">
-<h2 class="anchored" data-anchor-id="general-info">General Info</h2>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="functions" class="level2">
+<h2 class="anchored" data-anchor-id="functions">Functions</h2>
+<section id="is_banned_candidate" class="level4">
+<h4 class="anchored" data-anchor-id="is_banned_candidate">is_banned_candidate</h4>
+<p>Description</p>
+<p>Determines whether a candidate keyword phrase should be excluded from further consideration.</p>
+<p>A candidate is considered banned if it contains:</p>
+<p>Any substring from a predefined list of banned terms, or</p>
+<p>Any person name from a provided set</p>
+<p>All checks are performed in a case-insensitive manner. This function is typically used early in the pipeline to remove inappropriate or unwanted keyword phrases.</p>
+<p>Parameters</p>
+<p>c (str)</p>
+<p>Candidate keyword phrase to evaluate.</p>
+<p>banned_substrings (list[str])</p>
+<p>List of substrings that should not appear in valid keywords.</p>
+<p>person_names (set[str])</p>
+<p>Set of person names that should be excluded if found in a candidate.</p>
+<p>Returns</p>
+<p>bool</p>
+<p>Returns True if the candidate should be banned, otherwise False.</p>
+<p>Examples</p>
+<div id="a5647003" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> senate_hearings.keybert_funcs <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>is_banned_candidate(</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    c<span class="op">=</span><span class="st">"john doe analysis"</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    banned_substrings<span class="op">=</span>[<span class="st">"spam"</span>],</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    person_names<span class="op">=</span>{<span class="st">"john doe"</span>}</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># True</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>is_banned_candidate(</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    c<span class="op">=</span><span class="st">"machine learning"</span>,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    banned_substrings<span class="op">=</span>[<span class="st">"spam"</span>],</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    person_names<span class="op">=</span><span class="bu">set</span>()</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># False</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>False</code></pre>
+</div>
+</div>
 </section>
-<section id="documentation-1" class="level2">
-<h2 class="anchored" data-anchor-id="documentation-1">Documentation</h2>
-<section id="functions" class="level3">
-<h3 class="anchored" data-anchor-id="functions">Functions</h3>
-
-
+<section id="mmr_select" class="level4">
+<h4 class="anchored" data-anchor-id="mmr_select">mmr_select</h4>
+<p>Description</p>
+<p>Selects a subset of candidate keywords using Maximal Marginal Relevance (MMR).</p>
+<p>MMR balances:</p>
+<p>Relevance of each candidate to the document, and</p>
+<p>Diversity relative to keywords that have already been selected</p>
+<p>This approach helps avoid redundant keywords while still prioritizing semantic relevance. Similarity calculations are based on vector dot products (cosine similarity when embeddings are normalized).</p>
+<p>Parameters</p>
+<p>doc_emb (numpy.ndarray)</p>
+<p>Embedding vector representing the document.</p>
+<p>cand_embs (numpy.ndarray)</p>
+<p>2D array of candidate keyword embeddings with shape (n_candidates, embedding_dim).</p>
+<p>candidates (list[str])</p>
+<p>Candidate keyword phrases corresponding to the embedding rows.</p>
+<p>top_n (int, default = 10)</p>
+<p>Number of keywords to select.</p>
+<p>lambda_param (float, default = 0.7)</p>
+<p>Trade-off parameter between relevance and diversity:</p>
+<p>Values closer to 1 emphasize relevance</p>
+<p>Values closer to 0 emphasize diversity</p>
+<p>Returns</p>
+<p>list[str]</p>
+<p>List of selected keyword phrases in selection order.</p>
+<p>Examples</p>
+<div id="c888aa0c" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>doc_emb <span class="op">=</span> np.array([<span class="fl">1.0</span>, <span class="fl">0.0</span>])</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>cand_embs <span class="op">=</span> np.array([</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    [<span class="fl">1.0</span>, <span class="fl">0.0</span>],</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    [<span class="fl">0.9</span>, <span class="fl">0.1</span>],</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    [<span class="fl">0.0</span>, <span class="fl">1.0</span>]</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>candidates <span class="op">=</span> [<span class="st">"ai"</span>, <span class="st">"machine learning"</span>, <span class="st">"biology"</span>]</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>mmr_select(doc_emb, cand_embs, candidates, top_n<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co"># ['ai', 'machine learning']</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<pre><code>['ai', 'machine learning']</code></pre>
+</div>
+</div>
 </section>
+<section id="normalize_keyword" class="level4">
+<h4 class="anchored" data-anchor-id="normalize_keyword">normalize_keyword</h4>
+<p>Description</p>
+<p>Normalizes a keyword to a canonical representation using a lookup dictionary.</p>
+<p>This function is useful for consolidating multiple surface forms (e.g., abbreviations or capitalization variants) into a single standardized keyword.</p>
+<p>Parameters</p>
+<p>k (str)</p>
+<p>Keyword to normalize.</p>
+<p>normalize_map (dict[str, str])</p>
+<p>Dictionary mapping lowercase keyword variants to their canonical forms.</p>
+<p>Returns</p>
+<p>str</p>
+<p>Normalized keyword if a mapping exists; otherwise, the original keyword.</p>
+<p>Examples</p>
+<div id="231738c1" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>normalize_map <span class="op">=</span> {</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ai"</span>: <span class="st">"artificial intelligence"</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ml"</span>: <span class="st">"machine learning"</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>normalize_keyword(<span class="st">"AI"</span>, normalize_map)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 'artificial intelligence'</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>normalize_keyword(<span class="st">"statistics"</span>, normalize_map)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 'statistics'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<pre><code>'statistics'</code></pre>
+</div>
+</div>
+</section>
+<section id="filter_and_normalize_keywords" class="level4">
+<h4 class="anchored" data-anchor-id="filter_and_normalize_keywords">filter_and_normalize_keywords</h4>
+<p>Description</p>
+<p>Filters, normalizes, and formats a list of keywords into a final output structure.</p>
+<p>This function performs the following steps:</p>
+<p>Removes banned keywords using is_banned_candidate</p>
+<p>Normalizes remaining keywords using normalize_keyword</p>
+<p>Trims the list to a target size (top_n)</p>
+<p>Pads the list with empty strings if fewer than top_n remain</p>
+<p>Produces both a list representation and a semicolon-separated string</p>
+<p>Parameters</p>
+<p>kws (list[str])</p>
+<p>Raw list of keyword strings.</p>
+<p>banned_substrings (list[str])</p>
+<p>Substrings that should be excluded.</p>
+<p>person_names (set[str])</p>
+<p>Person names to filter out.</p>
+<p>normalize_map (dict[str, str])</p>
+<p>Dictionary mapping keyword variants to canonical forms.</p>
+<p>top_n (int, default = 10)</p>
+<p>Target number of keywords in the output.</p>
+<p>Returns</p>
+<p>tuple</p>
+<p>keywords_str (str): Semicolon-separated string of non-empty keywords</p>
+<p>keywords_list (list[str]): List of keywords padded with empty strings to length top_n</p>
+<p>Examples</p>
+<div id="9cf4d334" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>kws <span class="op">=</span> [<span class="st">"AI"</span>, <span class="st">"John Doe"</span>, <span class="st">"ML"</span>, <span class="st">"Data Science"</span>]</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>banned_substrings <span class="op">=</span> []</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>person_names <span class="op">=</span> {<span class="st">"john doe"</span>}</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>normalize_map <span class="op">=</span> {</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ai"</span>: <span class="st">"artificial intelligence"</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ml"</span>: <span class="st">"machine learning"</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>filter_and_normalize_keywords(</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    kws,</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    banned_substrings,</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    person_names,</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    normalize_map,</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    top_n<span class="op">=</span><span class="dv">3</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co"># ('artificial intelligence; machine learning; Data Science',</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="co">#  ['artificial intelligence', 'machine learning', 'Data Science'])</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<pre><code>('artificial intelligence; machine learning; Data Science',
+ ['artificial intelligence', 'machine learning', 'Data Science'])</code></pre>
+</div>
+</div>
+</section>
+<section id="trim_candidates_by_frequency" class="level4">
+<h4 class="anchored" data-anchor-id="trim_candidates_by_frequency">trim_candidates_by_frequency</h4>
+<p>Description</p>
+<p>Trims a list of candidate keyword phrases based on their overall frequency in a corpus.</p>
+<p>Candidate phrases are ranked by total frequency across all documents, and only the most frequent phrases are retained. This is commonly used to reduce the candidate set before embedding or MMR selection.</p>
+<p>Parameters</p>
+<p>candidates (list[str])</p>
+<p>Candidate keyword phrases.</p>
+<p>X (scipy.sparse matrix)</p>
+<p>Document-term matrix (e.g., output of CountVectorizer). Columns correspond to candidates.</p>
+<p>max_candidates (int)</p>
+<p>Maximum number of candidates to retain.</p>
+<p>Returns</p>
+<p>list[str]</p>
+<p>Trimmed list of candidate phrases sorted by descending frequency.</p>
+<p>Examples</p>
+<div id="4c49bf2f" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.sparse <span class="im">import</span> csr_matrix</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>candidates <span class="op">=</span> [<span class="st">"ai"</span>, <span class="st">"ml"</span>, <span class="st">"statistics"</span>]</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> csr_matrix([</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>[<span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">0</span>],</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>[<span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">1</span>]</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>trim_candidates_by_frequency(candidates, X, max_candidates<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co"># ['ai', 'ml']</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<pre><code>['ai', 'statistics']</code></pre>
+</div>
+</div>
+
+
 </section>
 </section>
 

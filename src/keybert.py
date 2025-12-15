@@ -12,7 +12,7 @@ from sentence_transformers import SentenceTransformer
 from sklearn.feature_extraction.text import CountVectorizer
 
 # Import keyword extraction functions
-from keybert_funcs import is_banned_candidate, mmr_select, filter_and_normalize_keywords, trim_candidates_by_frequency
+from senate_hearings.keybert_funcs import is_banned_candidate, mmr_select, filter_and_normalize_keywords, trim_candidates_by_frequency
 
 # Note: spaCy person-entity filtering removed to preserve relevant names.
 
