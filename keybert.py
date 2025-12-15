@@ -121,13 +121,17 @@ for session in sessions:
     df = pd.read_csv(inpath)
     docs = (df['title'].fillna('') + '\n' + df['text'].fillna('')).astype(str).tolist()
 
-    # Extract person names with spaCy (if available)
+    # Extract person names with spaCy (if available) - process in smaller batches to avoid memory issues
     person_names = set()
     if nlp is not None:
-        for doc in nlp.pipe(docs, disable=["parser", "tagger"]):
-            for ent in doc.ents:
-                if ent.label_ == 'PERSON':
-                    person_names.add(ent.text.strip().lower())
+        print('Extracting person names with spaCy (batched)...')
+        batch_size = 50  # Process 50 documents at a time
+        for i in range(0, len(docs), batch_size):
+            batch = docs[i:i+batch_size]
+            for doc in nlp.pipe(batch, disable=["parser", "tagger", "tok2vec", "lemmatizer"], batch_size=10):
+                for ent in doc.ents:
+                    if ent.label_ == 'PERSON':
+                        person_names.add(ent.text.strip().lower())
     else:
         # fallback: no person filtering
         person_names = set()
