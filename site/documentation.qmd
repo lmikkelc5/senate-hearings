@@ -5,40 +5,41 @@
 ## Functions
 
 #### is_banned_candidate
-Description
+
+##### Description
 
 Determines whether a candidate keyword phrase should be excluded from further consideration.
 
-A candidate is considered banned if it contains:
+- A candidate is considered banned if it contains:
 
-Any substring from a predefined list of banned terms, or
+- Any substring from a predefined list of banned terms, or
 
-Any person name from a provided set
+- Any person name from a provided set
 
 All checks are performed in a case-insensitive manner. This function is typically used early in the pipeline to remove inappropriate or unwanted keyword phrases.
 
-Parameters
+##### Parameters
 
-c (str)
+###### c (str)
 
 Candidate keyword phrase to evaluate.
 
-banned_substrings (list[str])
+###### banned_substrings (list[str])
 
 List of substrings that should not appear in valid keywords.
 
-person_names (set[str])
+###### person_names (set[str])
 
 Set of person names that should be excluded if found in a candidate.
 
-Returns
+###### Returns
 
 bool
 
 Returns True if the candidate should be banned, otherwise False.
 
-Examples
-```{python, eval=FALSE}
+##### Examples
+```{python, eval: false}
 from senate_hearings.keybert_funcs import *
 
 is_banned_candidate(
@@ -56,37 +57,36 @@ is_banned_candidate(
 ```
 
 #### mmr_select
-Description
+
+##### Description
 
 Selects a subset of candidate keywords using Maximal Marginal Relevance (MMR).
 
-MMR balances:
+##### MMR balances:
 
-Relevance of each candidate to the document, and
-
-Diversity relative to keywords that have already been selected
+Relevance of each candidate to the document, and diversity relative to keywords that have already been selected.
 
 This approach helps avoid redundant keywords while still prioritizing semantic relevance. Similarity calculations are based on vector dot products (cosine similarity when embeddings are normalized).
 
-Parameters
+##### Parameters
 
-doc_emb (numpy.ndarray)
+###### doc_emb (numpy.ndarray)
 
 Embedding vector representing the document.
 
-cand_embs (numpy.ndarray)
+###### cand_embs (numpy.ndarray)
 
 2D array of candidate keyword embeddings with shape (n_candidates, embedding_dim).
 
-candidates (list[str])
+###### candidates (list[str])
 
 Candidate keyword phrases corresponding to the embedding rows.
 
-top_n (int, default = 10)
+###### top_n (int, default = 10)
 
 Number of keywords to select.
 
-lambda_param (float, default = 0.7)
+###### lambda_param (float, default = 0.7)
 
 Trade-off parameter between relevance and diversity:
 
@@ -94,14 +94,14 @@ Values closer to 1 emphasize relevance
 
 Values closer to 0 emphasize diversity
 
-Returns
+###### Returns
 
 list[str]
 
 List of selected keyword phrases in selection order.
 
-Examples
-```{python, eval=FALSE}
+##### Examples
+```{python, eval: false}
 doc_emb = np.array([1.0, 0.0])
 cand_embs = np.array([
     [1.0, 0.0],
@@ -116,30 +116,31 @@ mmr_select(doc_emb, cand_embs, candidates, top_n=2)
 ```
 
 #### normalize_keyword
-Description
+
+##### Description
 
 Normalizes a keyword to a canonical representation using a lookup dictionary.
 
 This function is useful for consolidating multiple surface forms (e.g., abbreviations or capitalization variants) into a single standardized keyword.
 
-Parameters
+##### Parameters
 
-k (str)
+###### k (str)
 
 Keyword to normalize.
 
-normalize_map (dict[str, str])
+###### normalize_map (dict[str, str])
 
 Dictionary mapping lowercase keyword variants to their canonical forms.
 
-Returns
+###### Returns
 
 str
 
 Normalized keyword if a mapping exists; otherwise, the original keyword.
 
-Examples
-```{python, eval=FALSE}
+##### Examples
+```{python, eval: false}
 normalize_map = {
     "ai": "artificial intelligence",
     "ml": "machine learning"
@@ -153,54 +154,54 @@ normalize_keyword("statistics", normalize_map)
 ```
 
 #### filter_and_normalize_keywords
-Description
+
+##### Description
 
 Filters, normalizes, and formats a list of keywords into a final output structure.
 
 This function performs the following steps:
 
-Removes banned keywords using is_banned_candidate
+- Removes banned keywords using is_banned_candidate
 
-Normalizes remaining keywords using normalize_keyword
+- Normalizes remaining keywords using normalize_keyword
 
-Trims the list to a target size (top_n)
+- Trims the list to a target size (top_n)
 
-Pads the list with empty strings if fewer than top_n remain
+- Pads the list with empty strings if fewer than top_n remain
 
-Produces both a list representation and a semicolon-separated string
+- Produces both a list representation and a semicolon-separated string
 
-Parameters
+##### Parameters
 
-kws (list[str])
+###### kws (list[str])
 
 Raw list of keyword strings.
 
-banned_substrings (list[str])
+###### banned_substrings (list[str])
 
 Substrings that should be excluded.
 
-person_names (set[str])
+###### person_names (set[str])
 
 Person names to filter out.
 
-normalize_map (dict[str, str])
+###### normalize_map (dict[str, str])
 
 Dictionary mapping keyword variants to canonical forms.
 
-top_n (int, default = 10)
+###### top_n (int, default = 10)
 
 Target number of keywords in the output.
 
-Returns
-
+###### Returns
 tuple
 
 keywords_str (str): Semicolon-separated string of non-empty keywords
 
 keywords_list (list[str]): List of keywords padded with empty strings to length top_n
 
-Examples
-```{python, eval=FALSE}
+##### Examples
+```{python, eval: false}
 kws = ["AI", "John Doe", "ML", "Data Science"]
 banned_substrings = []
 person_names = {"john doe"}
@@ -222,35 +223,36 @@ filter_and_normalize_keywords(
 ```
 
 #### trim_candidates_by_frequency
-Description
+
+##### Description
 
 Trims a list of candidate keyword phrases based on their overall frequency in a corpus.
 
 Candidate phrases are ranked by total frequency across all documents, and only the most frequent phrases are retained. This is commonly used to reduce the candidate set before embedding or MMR selection.
 
-Parameters
+##### Parameters
 
-candidates (list[str])
+###### candidates (list[str])
 
 Candidate keyword phrases.
 
-X (scipy.sparse matrix)
+###### X (scipy.sparse matrix)
 
 Document-term matrix (e.g., output of CountVectorizer). Columns correspond to candidates.
 
-max_candidates (int)
+###### max_candidates (int)
 
 Maximum number of candidates to retain.
 
-Returns
+###### Returns
 
 list[str]
 
 Trimmed list of candidate phrases sorted by descending frequency.
 
-Examples
+##### Examples
 
-```{python, eval=FALSE}
+```{python, eval: false}
 from scipy.sparse import csr_matrix
 
 
@@ -264,3 +266,419 @@ X = csr_matrix([
 trim_candidates_by_frequency(candidates, X, max_candidates=2)
 # ['ai', 'ml']
 ```
+
+#### _safe_click
+
+##### Description
+
+Safely clicks a Selenium web element while handling common interaction failures.
+
+This helper function attempts to click an element by:
+
+- Scrolling it into view
+
+- Performing a standard click
+
+- Falling back to a JavaScript-based click if necessary
+
+It gracefully handles common Selenium exceptions such as intercepted clicks or stale references and returns a success flag instead of raising errors.
+
+##### Parameters
+
+###### driver (selenium.webdriver)
+
+Active Selenium WebDriver instance.
+
+###### el (selenium.webdriver.remote.webelement.WebElement)
+
+Element to be clicked.
+
+###### sleep_after_click (float, default = 0.25)
+
+Time (in seconds) to wait after clicking to allow the page to update.
+
+##### Returns
+
+bool
+
+Returns True if the click was successful, otherwise False.
+
+#### click_all_more_buttons
+
+##### Description
+
+Clicks all visible “More” or “Show more” style controls on a page until none remain.
+
+This function is designed for pages with dynamically expanding content. It:
+
+- Repeatedly searches for <a> or <button> elements containing the word “more”
+
+- Skips elements that would navigate away from the page
+
+- Clicks valid expansion controls until no more are found
+
+This is commonly used to fully expand truncated content before scraping HTML.
+
+##### Parameters
+
+###### driver (selenium.webdriver)
+
+Active Selenium WebDriver instance.
+
+###### timeout (int, default = 10)
+
+Maximum time to wait for page updates after clicking.
+
+###### sleep_after_click (float, default = 0.25)
+
+Pause after each click to allow content to load.
+
+##### Returns
+
+bool
+
+Returns True if at least one button was clicked, otherwise False.
+
+#### expand_all_toggles
+
+##### Description
+
+Expands common in-page toggle controls such as accordions and collapsible sections.
+
+This function targets typical Bootstrap and ARIA-based toggles and:
+
+- Skips already-expanded elements
+
+- Avoids real navigation links
+
+- Uses safe clicking to prevent Selenium errors
+
+It is useful for revealing hidden content sections before extracting page HTML.
+
+##### Parameters
+
+###### driver (selenium.webdriver)
+
+Active Selenium WebDriver instance.
+
+###### sleep_after_click (float, default = 0.25)
+
+Pause after each toggle expansion.
+
+##### Returns
+
+None
+
+#### get_fully_expanded_html
+
+##### Description
+
+Retrieves fully expanded HTML content from a dynamic web page using Selenium.
+
+This function:
+
+- Loads a page in a headless Chrome browser
+
+- Expands all “more” buttons and toggles
+
+- Captures the final rendered HTML
+
+- Optionally saves the HTML to disk
+
+It is the primary entry point for scraping dynamically loaded govinfo pages.
+
+##### Parameters
+
+###### url (str)
+
+URL of the page to load.
+
+###### headless (bool, default = True)
+
+Whether to run Chrome in headless mode.
+
+###### save_to (str | None)
+
+Optional path to save the retrieved HTML.
+
+###### wait (int, default = 10)
+
+Time to wait for the page body to load.
+
+##### Returns
+
+str
+
+Fully expanded page HTML.
+
+#### extract_hearing_links
+
+##### Description
+
+Extracts hearing detail and transcript links from a govinfo HTML page.
+
+The function searches for hearing identifiers (CHRG-*) and returns normalized URLs for:
+
+- Hearing detail pages
+
+- Hearing transcript text pages
+
+Duplicate hearings are automatically removed.
+
+##### Parameters
+
+###### html_text (str)
+
+HTML content from a govinfo page.
+
+##### Returns
+
+pandas.DataFrame
+
+DataFrame with columns:
+
+- details_url
+
+- text_url
+
+##### Examples
+
+```{python, eval: false}
+html = open("hearings.html").read()
+df = extract_hearing_links(html)
+df.head()
+```
+
+#### get_session_from_url
+
+##### Description
+
+Extracts the congressional session number from a hearing URL.
+
+For example, URLs containing CHRG-119... will return "119".
+
+##### Parameters
+
+###### url (str)
+
+Hearing URL containing a CHRG identifier.
+
+##### Returns
+
+str | None
+
+Session number if found, otherwise None.
+
+#### get_text
+
+##### Description
+
+Downloads and extracts transcript text from a govinfo text endpoint.
+
+This function:
+
+- Fetches transcript pages using HTTP requests
+
+- Parses <pre> blocks containing raw hearing text
+
+Retries failed requests using exponential backoff
+
+##### Parameters
+
+###### url (str)
+
+Govinfo transcript text URL.
+
+###### retries (int, default = 5)
+
+Number of retry attempts for failed requests.
+
+##### Returns
+
+str | None
+
+Transcript text if successful, otherwise None.
+
+#### to_html_url
+
+##### Description
+
+Converts a govinfo “app/text” URL into a direct HTML transcript URL.
+
+This is useful when switching from application views to static content pages.
+
+##### Parameters
+
+###### app_text_url (str)
+
+Govinfo /app/text/... URL.
+
+##### Returns
+
+str
+
+Corresponding /content/pkg/.../html/... URL.
+
+#### get_category_text
+
+##### Description
+
+Extracts the hearing category label from a govinfo details page.
+
+The category is located within a specific tooltip-enabled HTML element.
+
+##### Parameters
+
+###### url (str)
+
+Govinfo hearing details page URL.
+
+##### Returns
+
+str | None
+
+Category text if found, otherwise None.
+
+#### extract_main_text
+
+##### Description
+
+Cleans and normalizes raw congressional hearing transcript text.
+
+The function removes:
+
+- Bracketed metadata
+
+- Page numbers and formatting artifacts
+
+- Speaker labels and headings
+
+- Excessive whitespace and separators
+
+Optionally, it can remove ALL CAPS headings for cleaner narrative text.
+
+##### Parameters
+
+raw (str)
+
+Raw transcript text.
+
+###### remove_all_caps_headings (bool, default = False)
+
+Whether to remove ALL CAPS headings.
+
+##### Returns
+str
+
+Cleaned, readable transcript text.
+
+#### get_date
+
+##### Description
+
+Extracts the first full date string from transcript text.
+
+Dates are expected in the format:
+Month Day, Year
+
+##### Parameters
+text (str)
+
+Transcript text.
+
+##### Returns
+
+str
+
+Extracted date string, or "na" if none found.
+
+#### extract_hearing_title
+
+##### Description
+
+Extracts the hearing title from transcript text.
+
+The title is identified as one or more consecutive ALL-CAPS lines near the beginning of the document.
+
+##### Parameters
+raw_text (str)
+
+Raw transcript text.
+
+##### Returns
+
+str | None
+
+Hearing title if found.
+
+#### get_month
+
+##### Description
+
+Extracts the numeric month from a date string.
+
+##### Parameters
+
+date (str)
+
+Date string containing a month name.
+
+##### Returns
+
+int | None
+
+Month number (1–12) or None.
+
+#### get_day
+
+##### Description
+
+Extracts the day of the month from a date string.
+
+##### Parameters
+
+date (str)
+
+Date string.
+
+##### Returns
+
+int | str
+
+Day of month or "na".
+
+#### get_year
+
+##### Description
+
+Extracts the year from a date string.
+
+##### Parameters
+
+date (str)
+
+Date string.
+
+##### Returns
+
+int | str
+
+Year or "na".
+
+#### load_processed
+
+##### Description
+
+Loads a previously processed CSV file into a pandas DataFrame.
+
+##### Parameters
+
+path (str)
+
+Path to the CSV file.
+
+##### Returns
+
+pandas.DataFrame
+
+Loaded dataset.
