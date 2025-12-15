@@ -115,13 +115,12 @@ top_kw_series = pd.Series([
 ]).value_counts()
 top_keywords = top_kw_series.head(20).index.tolist()
 
-# Keyword inputs
-suggested = st.selectbox("Top keywords (EDA-style)", ["(choose)"] + top_keywords, index=0)
-keyword = st.text_input("Or enter a keyword (case-insensitive)", value="USDA")
+# Keyword input (dropdown only)
+suggested = st.selectbox("Choose a keyword (Top 20)", ["(choose)"] + top_keywords, index=0)
 match_type = st.radio("Match type", ["contains", "exact"], index=0)
 
-# Prefer manual entry; otherwise use dropdown selection
-active_keyword = keyword.strip() if keyword.strip() else (suggested if suggested != "(choose)" else "")
+# Use dropdown selection only
+active_keyword = suggested if suggested != "(choose)" else ""
 
 if active_keyword:
 	# Normalize keyword for matching
@@ -190,6 +189,8 @@ M = 20
 topM = kw_exploded["clean_kws"].value_counts().head(M).index.tolist()
 co_counts = {(a, b): 0 for a in topM for b in topM}
 for kws in all_df["clean_kws"]:
+	if not isinstance(kws, list):
+		continue
 	kws = [k for k in set(kws) if k in topM]
 	for a, b in combinations(sorted(kws), 2):
 		co_counts[(a, b)] += 1
@@ -233,7 +234,10 @@ all_kws_series = pd.Series([
 	for k in (kws if isinstance(kws, list) else [])
 ])
 top10 = all_kws_series.value_counts().head(10).index.tolist()
-presence = pd.DataFrame({kw: all_df["clean_kws"].apply(lambda ks: int(kw in set(ks))) for kw in top10})
+presence = pd.DataFrame({
+	kw: all_df["clean_kws"].apply(lambda ks: int(kw in (set(ks) if isinstance(ks, list) else set())))
+    for kw in top10
+})
 
 # Pearson correlation
 corr = presence.corr(method="pearson")
