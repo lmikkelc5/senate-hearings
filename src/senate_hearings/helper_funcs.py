@@ -352,7 +352,7 @@ def get_month(date):
         return 10
     elif "November" in date:
         return 11
-    elif "February" in date:
+    elif "December" in date:
         return 12
     else:
         return None
