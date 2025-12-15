@@ -4,7 +4,4 @@ title: "Senate Hearings Analysis"
 
 # Senate Hearings package
 
-
-- Built to help scrape data from https://www.govinfo.gov/browse/committee
-- Also includes functions to clean data
-- Attached is a demo and the documentation for this package
+## Basic Overview
