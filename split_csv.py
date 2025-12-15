@@ -5,5 +5,5 @@ session = [119, 118, 117, 116, 115, 114, 113, 112, 111, 110, 109, 108, 107, 106,
 
 for item in session:
     df = big_df[big_df["session"] == item]
-    df.to_csv(f"data/session_{item}.csv", index=False)
+    df.to_csv(f"data/uncleaned_data/session_{item}.csv", index=False)
     print(f'saved session {item}')
