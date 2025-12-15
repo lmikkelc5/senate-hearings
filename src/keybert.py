@@ -88,7 +88,7 @@ normalize_map = {
 }
 
 # Output file (single aggregated CSV)
-outfile = 'data/cleaned/all_sessions_keywords_filtered.csv'
+outfile = '../data/cleaned/all_sessions_keywords_filtered.csv'
 os.makedirs(os.path.dirname(outfile), exist_ok=True)
 
 # Load embedding model once
@@ -229,3 +229,4 @@ else:
     print('No rows generated; nothing saved')
 
 print('Done')
+
