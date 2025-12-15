@@ -210,27 +210,6 @@ def to_html_url(app_text_url: str) -> str:
     granule = pkg  # main part uses the same ID
     return f"https://www.govinfo.gov/content/pkg/{pkg}/html/{granule}.htm"
 
-def get_congress(link: str) -> str:
-    pass
-
-def get_members():
-    pass
-
-def get_witnesses():
-    pass
-
-def get_commitee():
-    pass
-
-def get_date():
-    pass
-
-def get_subtype():
-    pass
-
-def get_hearing_num():
-    pass
-
 def get_category_text(url: str) -> str | None:
     # Get the page
     response = requests.get(url, timeout=15)
@@ -250,10 +229,6 @@ def get_category_text(url: str) -> str | None:
         return None
 
     return p_tag.get_text(strip=True)
-
-import re
-
-import re
 
 def extract_main_text(raw, remove_all_caps_headings=False):
     """
@@ -304,7 +279,7 @@ def get_date(text):
     r"\b(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},\s+\d{4}\b")
     matches = pattern.findall(text)
     if len(matches) == 0:
-        return None
+        return "na"
     
     return matches[0]
 
@@ -327,3 +302,47 @@ def extract_hearing_title(raw_text):
     # Clean up trailing newline
     return match.group(0).strip().replace("\n", "")
 
+def get_month(date):
+    date = str(date)
+    if "January" in date:
+        return 1
+    elif "February" in date:
+        return 2
+    elif "March" in date:
+        return 3
+    elif "April" in date:
+        return 4
+    elif "May" in date:
+        return 5
+    elif "June" in date:
+        return 6
+    elif "July" in date:
+        return 7
+    elif "August" in date:
+        return 8
+    elif "September" in date:
+        return 9
+    elif "October" in date:
+        return 10
+    elif "November" in date:
+        return 11
+    elif "February" in date:
+        return 12
+    else:
+        return None
+
+def get_day(date):
+    date = str(date)
+    pattern = re.compile(r"(\d{1,2})")
+    match = pattern.search(date)
+    if match:
+        return int(match.group(1))
+    return 'na'
+
+def get_year(date):
+    date = str(date)
+    pattern = re.compile(r"(\d{4})")
+    match = pattern.search(date)
+    if match:
+        return int(match.group(1))
+    return 'na'

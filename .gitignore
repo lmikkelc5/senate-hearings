@@ -1,2 +1,5 @@
 senate_data_with_text.csv
 
+
+/.quarto/
+**/*.quarto_ipynb

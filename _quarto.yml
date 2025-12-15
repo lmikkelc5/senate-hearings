@@ -1,0 +1,24 @@
+project:
+  type: website
+  output-dir: docs
+  render:
+    - "*.qmd"
+
+website:
+  title: "Senate Hearings Project"
+  navbar:
+    left:
+      - text: Home
+        href: index.qmd
+      - text: Documentation
+        href: documentation.qmd
+      - text: Technical Report
+        href: technical_report.qmd
+      - text: Tutorial
+        href: tutorial.qmd
+
+
+format:
+  html:
+    theme: cosmo
+    toc: true
