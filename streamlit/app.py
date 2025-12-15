@@ -12,10 +12,8 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from itertools import combinations
 
-
 # ---------- Page Title ----------
 st.title("Senate Hearings Explorer")
-
 
 # ---------- Load Data ----------
 all_df = helper_funcs.load_processed("data/cleaned/all_sessions_keywords_filtered.csv")
