@@ -3,7 +3,7 @@ import requests
 import time
 import re
 import pandas as pd
-from src.helper_funcs import extract_hearing_links
+from senate_hearings import helper_funcs
 import glob
 
 all_dfs = []

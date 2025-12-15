@@ -1,7 +1,7 @@
 [
   {
-    "objectID": "index.html",
-    "href": "index.html",
+    "objectID": "site/index.html",
+    "href": "site/index.html",
     "title": "Senate Hearings Analysis",
     "section": "",
     "text": "Senate Hearings package\n\nBuilt to help scrape data from https://www.govinfo.gov/browse/committee\nAlso includes functions to clean data\nAttached is a demo and the documentation for this package"
