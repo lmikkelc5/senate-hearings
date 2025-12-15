@@ -101,13 +101,18 @@ def build_clean_keywords(df: pd.DataFrame) -> pd.Series:
 		clean_kws.append(kws)
 	return pd.Series(clean_kws)
 
+
 # Compute cleaned keywords column once and guard against non-list values
 all_df["clean_kws"] = build_clean_keywords(all_df).apply(
-	lambda x: x if isinstance(x, list) else []
+    lambda x: x if isinstance(x, list) else []
 )
 
 # Build top-20 keyword list from cleaned keywords
-top_kw_series = pd.Series([kw for kws in all_df["clean_kws"] for kw in (kws or [])]).value_counts()
+top_kw_series = pd.Series([
+	kw
+	for kws in all_df["clean_kws"]
+	for kw in (kws if isinstance(kws, list) else [])
+]).value_counts()
 top_keywords = top_kw_series.head(20).index.tolist()
 
 # Keyword inputs
@@ -222,7 +227,11 @@ if "text" in all_df.columns:
 
 # Correlation and association heatmaps for top 10 keywords
 st.write("Correlation heatmaps for top 10 keywords:")
-all_kws_series = pd.Series([k for kws in all_df["clean_kws"] for k in (kws or [])])
+all_kws_series = pd.Series([
+	k
+	for kws in all_df["clean_kws"]
+	for k in (kws if isinstance(kws, list) else [])
+])
 top10 = all_kws_series.value_counts().head(10).index.tolist()
 presence = pd.DataFrame({kw: all_df["clean_kws"].apply(lambda ks: int(kw in set(ks))) for kw in top10})
 
