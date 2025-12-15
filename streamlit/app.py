@@ -1,10 +1,6 @@
 import sys
 from pathlib import Path
-SITE_DIR = Path(__file__).resolve().parent
-sys.path.insert(0, str(SITE_DIR))
 from senate_hearings import helper_funcs
-sys.path.append(str(Path(__file__).resolve().parents[1]))
-
 import streamlit as st
 import pandas as pd
 import numpy as np

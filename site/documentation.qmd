@@ -1,7 +1,5 @@
 # Documentation
 
-
-
 ## Functions
 
 #### is_banned_candidate
