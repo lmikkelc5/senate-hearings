@@ -5,3 +5,4 @@ title: "Senate Hearings Analysis"
 # Senate Hearings package
 
 ## Basic Overview
+For this project we built a package that helps when webscraping Senate Hearing data from https://www.govinfo.gov/browse/committee. We have included in this website the full documentation to allow for the recreation of our project using this package along with a written report of our findings and a tutorial to show how our package is meant to be used. The documentation can be found [here](documentation.qmd) and the written report can be found [here](technical_report.qmd)

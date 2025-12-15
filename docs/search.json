@@ -4,6 +4,13 @@
     "href": "site/index.html",
     "title": "Senate Hearings Analysis",
     "section": "",
-    "text": "Senate Hearings package\n\nBuilt to help scrape data from https://www.govinfo.gov/browse/committee\nAlso includes functions to clean data\nAttached is a demo and the documentation for this package"
+    "text": "For this project we built a package that helps when webscraping Senate Hearing data from https://www.govinfo.gov/browse/committee. We have included in this website the full documentation to allow for the recreation of our project using this package along with a written report of our findings and a tutorial to show how our package is meant to be used. The documentation can be found here and the written report can be found"
+  },
+  {
+    "objectID": "site/index.html#basic-overview",
+    "href": "site/index.html#basic-overview",
+    "title": "Senate Hearings Analysis",
+    "section": "",
+    "text": "For this project we built a package that helps when webscraping Senate Hearing data from https://www.govinfo.gov/browse/committee. We have included in this website the full documentation to allow for the recreation of our project using this package along with a written report of our findings and a tutorial to show how our package is meant to be used. The documentation can be found here and the written report can be found"
   }
 ]
