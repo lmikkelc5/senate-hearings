@@ -12,6 +12,9 @@ from tqdm import tqdm
 from sentence_transformers import SentenceTransformer
 from sklearn.feature_extraction.text import CountVectorizer
 
+# Import keyword extraction functions
+from keybert_funcs import is_banned_candidate, mmr_select, filter_and_normalize_keywords, trim_candidates_by_frequency
+
 # Note: spaCy person-entity filtering removed to preserve relevant names.
 
 # Parameters
@@ -118,25 +121,12 @@ for session in sessions:
 
     # Optionally limit candidates by frequency
     if len(candidates) > max_candidates:
-        freqs = np.asarray(X.sum(axis=0)).ravel()
-        top_idx = np.argsort(freqs)[-max_candidates:]
-        candidates = [candidates[i] for i in top_idx]
-        candidates = [c for _, c in sorted(zip(freqs[top_idx], candidates), key=lambda x: -x[0])]
+        candidates = trim_candidates_by_frequency(candidates, X, max_candidates)
         print('Trimmed candidate phrases to:', len(candidates))
 
     # Filter candidates using banned substrings and person names
-    def is_banned_candidate(c):
-        cl = c.lower()
-        for sub in banned_substrings:
-            if sub in cl:
-                return True
-        for name in person_names:
-            if name and name in cl:
-                return True
-        return False
-
     before = len(candidates)
-    candidates = [c for c in candidates if not is_banned_candidate(c)]
+    candidates = [c for c in candidates if not is_banned_candidate(c, banned_substrings, person_names)]
     filtered = before - len(candidates)
     if filtered:
         print(f'Filtered out {filtered} candidates matching banned substrings or person names')
@@ -152,29 +142,6 @@ for session in sessions:
     print('Encoding candidates...')
     cand_embs = model.encode(candidates, batch_size=128, show_progress_bar=True, convert_to_numpy=True, normalize_embeddings=True)
 
-    # MMR selection
-    def mmr_select(doc_emb, cand_embs, candidates, top_n=10, lambda_param=0.7):
-        import numpy as np
-        if len(candidates) == 0:
-            return []
-        doc_sim = np.dot(cand_embs, doc_emb)
-        selected_idx = []
-        idx = int(np.argmax(doc_sim))
-        selected_idx.append(idx)
-        while len(selected_idx) < min(top_n, len(candidates)):
-            candidates_idx = [i for i in range(len(candidates)) if i not in selected_idx]
-            mmr_scores = []
-            for i in candidates_idx:
-                relevance = doc_sim[i]
-                diversity_score = max([np.dot(cand_embs[i], cand_embs[j]) for j in selected_idx]) if selected_idx else 0
-                score = lambda_param * relevance - (1 - lambda_param) * diversity_score
-                mmr_scores.append((score, i))
-            if not mmr_scores:
-                break
-            next_idx = max(mmr_scores)[1]
-            selected_idx.append(next_idx)
-        return [candidates[i] for i in selected_idx]
-
     print('Selecting keywords with MMR...')
     for idx_doc, emb in enumerate(tqdm(doc_embs, desc=f'docs session {session}')):
         try:
@@ -183,16 +150,7 @@ for session in sessions:
             kws = []
 
         # Final safety-filter + normalization for canonical forms
-        def norm(k):
-            kl = k.lower()
-            return normalize_map.get(kl, k)
-        kws = [norm(k) for k in kws if not is_banned_candidate(k)]
-
-        # Fill up to top_n keywords (if fewer, pad with empty strings)
-        kws = kws[:top_n]
-        kws += [''] * (top_n - len(kws))
-
-        keywords_str = '; '.join([k for k in kws if k])
+        keywords_str, kws = filter_and_normalize_keywords(kws, banned_substrings, person_names, normalize_map, top_n)
 
         # Collect row with requested columns
         row = {
