@@ -97,69 +97,6 @@ model = SentenceTransformer(model_name)
 
 rows = []  # collect dicts for final DataFrame
 
-# Helper: build consistent date fields from whatever is available
-def build_date_fields(df_row):
-    # Try composed date first
-    date_val = df_row.get('date', '')
-    year_val = df_row.get('year', '')
-    month_val = df_row.get('month', '')
-    day_val = df_row.get('day', '')
-
-    # If explicit date string present, parse robustly
-    if isinstance(date_val, str) and date_val.strip() != '':
-        try:
-            d = pd.to_datetime(date_val, errors='coerce', infer_datetime_format=True, dayfirst=False)
-            if pd.notnull(d):
-                return {
-                    'date': d.strftime('%Y-%m-%d'),
-                    'year': str(d.year),
-                    'month': str(d.month).zfill(2),
-                    'day': str(d.day).zfill(2)
-                }
-        except Exception:
-            pass
-
-    # If separate parts available in any order, attempt composition
-    parts = {
-        'year': year_val,
-        'month': month_val,
-        'day': day_val
-    }
-    # Normalize non-empty numeric-like strings
-    try:
-        y = int(str(parts['year']).strip()) if str(parts['year']).strip() != '' else None
-    except Exception:
-        y = None
-    try:
-        m = int(str(parts['month']).strip()) if str(parts['month']).strip() != '' else None
-    except Exception:
-        m = None
-    try:
-        dday = int(str(parts['day']).strip()) if str(parts['day']).strip() != '' else None
-    except Exception:
-        dday = None
-
-    # If we have enough parts, create a date
-    if y and m and dday:
-        try:
-            d = pd.Timestamp(year=y, month=m, day=dday)
-            return {
-                'date': d.strftime('%Y-%m-%d'),
-                'year': str(y),
-                'month': str(m).zfill(2),
-                'day': str(dday).zfill(2)
-            }
-        except Exception:
-            pass
-
-    # Fallback: return what we have (as strings), empty for missing
-    return {
-        'date': str(date_val) if isinstance(date_val, str) else '',
-        'year': str(year_val) if isinstance(year_val, (str, int)) else '',
-        'month': str(month_val) if isinstance(month_val, (str, int)) else '',
-        'day': str(day_val) if isinstance(day_val, (str, int)) else ''
-    }
-
 for session in sessions:
     print('\nProcessing session:', session)
     inpath = f"../data/cleaned/session_{session}_cleaned.csv"
@@ -258,15 +195,13 @@ for session in sessions:
         keywords_str = '; '.join([k for k in kws if k])
 
         # Collect row with requested columns
-        # Build robust date fields regardless of column order/format
-        row_base = {
-            'session': df.at[idx_doc, 'session'] if 'session' in df.columns else session,
-            'title': df.at[idx_doc, 'title'] if 'title' in df.columns else '',
-        }
-        date_fields = build_date_fields(df.loc[idx_doc] if idx_doc in df.index else {})
         row = {
-            **row_base,
-            **date_fields,
+            'session': df.at[idx_doc, 'session'] if 'session' in df.columns else session,
+            'date': df.at[idx_doc, 'date'] if 'date' in df.columns else '',
+            'month': df.at[idx_doc, 'month'] if 'month' in df.columns else '',
+            'day': df.at[idx_doc, 'day'] if 'day' in df.columns else '',
+            'year': df.at[idx_doc, 'year'] if 'year' in df.columns else '',
+            'title': df.at[idx_doc, 'title'] if 'title' in df.columns else '',
             'keywords': keywords_str
         }
         for j in range(top_n):
