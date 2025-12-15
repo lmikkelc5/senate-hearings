@@ -126,6 +126,32 @@ def expand_all_toggles(driver, sleep_after_click=0.25) -> None:
 
 BASE = "https://www.govinfo.gov"
 
+def get_fully_expanded_html(url: str, headless: bool = True, save_to: str | None = None, wait: int = 10) -> str:
+    opts = Options()
+    if headless:
+        opts.add_argument("--headless=new")
+    opts.add_argument("--no-sandbox")
+    opts.add_argument("--disable-dev-shm-usage")
+
+    driver = webdriver.Chrome(options=opts)
+    try:
+        driver.get(url)
+        WebDriverWait(driver, wait).until(EC.presence_of_element_located((By.TAG_NAME, "body")))
+
+        # expand dynamic content
+        click_all_more_buttons(driver)
+        expand_all_toggles(driver)
+        click_all_more_buttons(driver)  # often helps after toggles expand
+
+        html = driver.page_source
+
+        if save_to:
+            Path(save_to).parent.mkdir(parents=True, exist_ok=True)
+            Path(save_to).write_text(html, encoding="utf-8")
+
+        return html
+    finally:
+        driver.quit()
 
 def extract_hearing_links(html_text: str) -> pd.DataFrame:
     """
