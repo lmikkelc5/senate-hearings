@@ -7,7 +7,9 @@ Public API is re-exported here for convenient imports.
 
 from __future__ import annotations
 
-# If all these functions currently live in ONE module file, e.g. helper_funcs.py:
+# --------------------
+# Scraping / parsing helpers
+# --------------------
 from .helper_funcs import (
     get_fully_expanded_html,
     extract_hearing_links,
@@ -21,9 +23,22 @@ from .helper_funcs import (
     get_month,
     get_day,
     get_year,
+    load_processed,
+)
+
+# --------------------
+# Keyword / KeyBERT helpers
+# --------------------
+from .keybert_funcs import (
+    is_banned_candidate,
+    mmr_select,
+    normalize_keyword,
+    filter_and_normalize_keywords,
+    trim_candidates_by_frequency,
 )
 
 __all__ = [
+    # helper_funcs
     "get_fully_expanded_html",
     "extract_hearing_links",
     "get_session_from_url",
@@ -36,4 +51,12 @@ __all__ = [
     "get_month",
     "get_day",
     "get_year",
+    "load_processed",
+
+    # keybert_funcs
+    "is_banned_candidate",
+    "mmr_select",
+    "normalize_keyword",
+    "filter_and_normalize_keywords",
+    "trim_candidates_by_frequency",
 ]

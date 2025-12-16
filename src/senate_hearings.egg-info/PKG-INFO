@@ -3,27 +3,39 @@ Name: senate-hearings
 Version: 0.1.0
 Summary: Scrape and clean U.S. Senate hearing transcripts.
 Author: Mikkel Christensen, Corbin Brinkerhoff
-License: MIT
+License-Expression: MIT
 Project-URL: Homepage, https://github.com/lmikkelc5/senate-hearings
 Keywords: scraping,nlp,senate,transcripts,streamlit,quarto
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
 Requires-Python: <3.13,>=3.11
 Description-Content-Type: text/markdown
+License-File: LICENSE
 Requires-Dist: beautifulsoup4>=4.12.0
-Requires-Dist: ipykernel>=7.1.0
-Requires-Dist: nbclient>=0.10.2
-Requires-Dist: nbformat>=5.10.4
 Requires-Dist: numpy>=2.3.4
 Requires-Dist: pandas>=2.3.3
 Requires-Dist: playwright>=1.55.0
 Requires-Dist: pyyaml>=6.0.3
 Requires-Dist: requests>=2.32.5
 Requires-Dist: scipy>=1.16.3
-Requires-Dist: seaborn>=0.13.2
 Requires-Dist: selenium>=4.38.0
-Requires-Dist: streamlit>=1.52.1
 Provides-Extra: dev
-Requires-Dist: spacy>=3.8.11; extra == "dev"
-Requires-Dist: sentence-transformers>=5.2.0; extra == "dev"
+Requires-Dist: build; extra == "dev"
+Requires-Dist: twine; extra == "dev"
+Requires-Dist: pytest; extra == "dev"
+Requires-Dist: ipykernel>=7.1.0; extra == "dev"
+Requires-Dist: nbclient>=0.10.2; extra == "dev"
+Requires-Dist: nbformat>=5.10.4; extra == "dev"
+Provides-Extra: viz
+Requires-Dist: seaborn>=0.13.2; extra == "viz"
+Provides-Extra: app
+Requires-Dist: streamlit>=1.52.1; extra == "app"
+Provides-Extra: nlp
+Requires-Dist: spacy>=3.8.11; extra == "nlp"
+Requires-Dist: sentence-transformers>=5.2.0; extra == "nlp"
+Dynamic: license-file
 
 ## URLs
 https://www.govinfo.gov/browse/committee
