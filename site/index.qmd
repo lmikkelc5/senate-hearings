@@ -8,6 +8,8 @@ What topics dominate U.S. Senate hearings, and how do they shift in response to 
 
 We built a complete data pipeline—from web scraping and text cleaning to keyword extraction and interactive visualization—packaged as a reusable Python tool for analyzing congressional hearing data.
 
+**Project by**: Mikkel Christensen and Corbin Brinkerhoff
+
 **Dataset**: Senate hearings from sessions 118-119 (~2023-2025) scraped from [govinfo.gov](https://www.govinfo.gov/browse/committee)
 
 ## Navigation
