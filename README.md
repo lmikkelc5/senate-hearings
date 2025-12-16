@@ -19,27 +19,30 @@ hearing data for analysis, NLP, and visualization workflows.
 
 ---
 
-## Documentation & demos
-
-These links will be filled in as the project evolves.
-
-### Full documentation (GitHub Pages)
-Link coming soon
-
-### Interactive EDA (Streamlit)
-Link coming soon
-
-### Source code (GitHub)
-https://github.com/lmikkelc5/senate-hearings
-
-### Tutorial (Github)
-
 ## Installation
 
 Basic installation:
 
 ```bash
-pip install senate-hearings   #package
-pip install senate-hearings[app]   # Streamlit demo dependencies
-pip install senate-hearings[nlp]   # NLP / keyword extraction dependencies
-pip install senate-hearings[viz]   # Visualization dependencies
+pip install senate-hearings
+```
+
+## Documentation & demos 
+
+### Home page (Github Pages)
+
+### Full documentation (GitHub Pages) 
+
+
+### Tutorial (Github Pages)
+
+
+### Interactive EDA (Streamlit) 
+
+https://senate-hearings-555.streamlit.app/
+
+### Source code (GitHub) 
+
+https://github.com/lmikkelc5/senate-hearings
+
+
