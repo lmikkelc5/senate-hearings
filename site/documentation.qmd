@@ -18,25 +18,25 @@ All checks are performed in a case-insensitive manner. This function is typicall
 
 ##### Parameters:
 
-###### c (str)
+###### c (str):
 
 Candidate keyword phrase to evaluate.
 
-###### banned_substrings (list[str])
+###### banned_substrings (list[str]):
 
 List of substrings that should not appear in valid keywords.
 
-###### person_names (set[str])
+###### person_names (set[str]):
 
 Set of person names that should be excluded if found in a candidate.
 
-###### Returns
+##### Returns:
 
 bool
 
 Returns True if the candidate should be banned, otherwise False.
 
-##### Examples
+##### Examples:
 ```{python, eval: false}
 from senate_hearings.keybert_funcs import *
 
@@ -54,9 +54,9 @@ is_banned_candidate(
 # False
 ```
 
-#### mmr_select
+#### **mmr_select()**
 
-##### Description
+##### Description:
 
 Selects a subset of candidate keywords using Maximal Marginal Relevance (MMR).
 
@@ -66,25 +66,25 @@ Relevance of each candidate to the document, and diversity relative to keywords 
 
 This approach helps avoid redundant keywords while still prioritizing semantic relevance. Similarity calculations are based on vector dot products (cosine similarity when embeddings are normalized).
 
-##### Parameters
+##### Parameters:
 
-###### doc_emb (numpy.ndarray)
+###### doc_emb (numpy.ndarray):
 
 Embedding vector representing the document.
 
-###### cand_embs (numpy.ndarray)
+###### cand_embs (numpy.ndarray):
 
 2D array of candidate keyword embeddings with shape (n_candidates, embedding_dim).
 
-###### candidates (list[str])
+###### candidates (list[str]):
 
 Candidate keyword phrases corresponding to the embedding rows.
 
-###### top_n (int, default = 10)
+###### top_n (int, default = 10):
 
 Number of keywords to select.
 
-###### lambda_param (float, default = 0.7)
+###### lambda_param (float, default = 0.7):
 
 Trade-off parameter between relevance and diversity:
 
@@ -92,13 +92,13 @@ Values closer to 1 emphasize relevance
 
 Values closer to 0 emphasize diversity
 
-###### Returns
+##### Returns:
 
 list[str]
 
 List of selected keyword phrases in selection order.
 
-##### Examples
+##### Examples:
 ```{python, eval: false}
 doc_emb = np.array([1.0, 0.0])
 cand_embs = np.array([
@@ -113,31 +113,31 @@ mmr_select(doc_emb, cand_embs, candidates, top_n=2)
 # ['ai', 'machine learning']
 ```
 
-#### normalize_keyword
+#### **normalize_keyword()**
 
-##### Description
+##### Description:
 
 Normalizes a keyword to a canonical representation using a lookup dictionary.
 
 This function is useful for consolidating multiple surface forms (e.g., abbreviations or capitalization variants) into a single standardized keyword.
 
-##### Parameters
+##### Parameters:
 
-###### k (str)
+###### k (str):
 
 Keyword to normalize.
 
-###### normalize_map (dict[str, str])
+###### normalize_map (dict[str, str]):
 
 Dictionary mapping lowercase keyword variants to their canonical forms.
 
-###### Returns
+##### Returns:
 
 str
 
 Normalized keyword if a mapping exists; otherwise, the original keyword.
 
-##### Examples
+##### Examples:
 ```{python, eval: false}
 normalize_map = {
     "ai": "artificial intelligence",
@@ -151,9 +151,9 @@ normalize_keyword("statistics", normalize_map)
 # 'statistics'
 ```
 
-#### filter_and_normalize_keywords
+#### **filter_and_normalize_keywords()**
 
-##### Description
+##### Description:
 
 Filters, normalizes, and formats a list of keywords into a final output structure.
 
@@ -169,36 +169,37 @@ This function performs the following steps:
 
 - Produces both a list representation and a semicolon-separated string
 
-##### Parameters
+##### Parameters:
 
-###### kws (list[str])
+###### kws (list[str]):
 
 Raw list of keyword strings.
 
-###### banned_substrings (list[str])
+###### banned_substrings (list[str]):
 
 Substrings that should be excluded.
 
-###### person_names (set[str])
+###### person_names (set[str]):
 
 Person names to filter out.
 
-###### normalize_map (dict[str, str])
+###### normalize_map (dict[str, str]):
 
 Dictionary mapping keyword variants to canonical forms.
 
-###### top_n (int, default = 10)
+###### top_n (int, default = 10):
 
 Target number of keywords in the output.
 
-###### Returns
+##### Returns:
+
 tuple
 
 keywords_str (str): Semicolon-separated string of non-empty keywords
 
 keywords_list (list[str]): List of keywords padded with empty strings to length top_n
 
-##### Examples
+##### Examples:
 ```{python, eval: false}
 kws = ["AI", "John Doe", "ML", "Data Science"]
 banned_substrings = []
@@ -220,35 +221,35 @@ filter_and_normalize_keywords(
 #  ['artificial intelligence', 'machine learning', 'Data Science'])
 ```
 
-#### trim_candidates_by_frequency
+#### **trim_candidates_by_frequency()**
 
-##### Description
+##### Description:
 
 Trims a list of candidate keyword phrases based on their overall frequency in a corpus.
 
 Candidate phrases are ranked by total frequency across all documents, and only the most frequent phrases are retained. This is commonly used to reduce the candidate set before embedding or MMR selection.
 
-##### Parameters
+##### Parameters:
 
-###### candidates (list[str])
+###### candidates (list[str]):
 
 Candidate keyword phrases.
 
-###### X (scipy.sparse matrix)
+###### X (scipy.sparse matrix):
 
 Document-term matrix (e.g., output of CountVectorizer). Columns correspond to candidates.
 
-###### max_candidates (int)
+###### max_candidates (int):
 
 Maximum number of candidates to retain.
 
-###### Returns
+##### Returns:
 
 list[str]
 
 Trimmed list of candidate phrases sorted by descending frequency.
 
-##### Examples
+##### Examples:
 
 ```{python, eval: false}
 from scipy.sparse import csr_matrix
@@ -265,9 +266,9 @@ trim_candidates_by_frequency(candidates, X, max_candidates=2)
 # ['ai', 'ml']
 ```
 
-#### _safe_click
+#### **_safe_click()**
 
-##### Description
+##### Description:
 
 Safely clicks a Selenium web element while handling common interaction failures.
 
@@ -281,29 +282,29 @@ This helper function attempts to click an element by:
 
 It gracefully handles common Selenium exceptions such as intercepted clicks or stale references and returns a success flag instead of raising errors.
 
-##### Parameters
+##### Parameters:
 
-###### driver (selenium.webdriver)
+###### driver (selenium.webdriver):
 
 Active Selenium WebDriver instance.
 
-###### el (selenium.webdriver.remote.webelement.WebElement)
+###### el (selenium.webdriver.remote.webelement.WebElement):
 
 Element to be clicked.
 
-###### sleep_after_click (float, default = 0.25)
+###### sleep_after_click (float, default = 0.25):
 
 Time (in seconds) to wait after clicking to allow the page to update.
 
-##### Returns
+##### Returns:
 
 bool
 
 Returns True if the click was successful, otherwise False.
 
-#### click_all_more_buttons
+#### **click_all_more_buttons()**
 
-##### Description
+##### Description:
 
 Clicks all visible “More” or “Show more” style controls on a page until none remain.
 
@@ -317,29 +318,29 @@ This function is designed for pages with dynamically expanding content. It:
 
 This is commonly used to fully expand truncated content before scraping HTML.
 
-##### Parameters
+##### Parameters:
 
-###### driver (selenium.webdriver)
+###### driver (selenium.webdriver):
 
 Active Selenium WebDriver instance.
 
-###### timeout (int, default = 10)
+###### timeout (int, default = 10):
 
 Maximum time to wait for page updates after clicking.
 
-###### sleep_after_click (float, default = 0.25)
+###### sleep_after_click (float, default = 0.25):
 
 Pause after each click to allow content to load.
 
-##### Returns
+##### Returns:
 
 bool
 
 Returns True if at least one button was clicked, otherwise False.
 
-#### expand_all_toggles
+#### **expand_all_toggles()**
 
-##### Description
+##### Description:
 
 Expands common in-page toggle controls such as accordions and collapsible sections.
 
@@ -353,23 +354,23 @@ This function targets typical Bootstrap and ARIA-based toggles and:
 
 It is useful for revealing hidden content sections before extracting page HTML.
 
-##### Parameters
+##### Parameters:
 
-###### driver (selenium.webdriver)
+###### driver (selenium.webdriver):
 
 Active Selenium WebDriver instance.
 
-###### sleep_after_click (float, default = 0.25)
+###### sleep_after_click (float, default = 0.25):
 
 Pause after each toggle expansion.
 
-##### Returns
+##### Returns:
 
 None
 
-#### get_fully_expanded_html
+#### **get_fully_expanded_html()**
 
-##### Description
+##### Description:
 
 Retrieves fully expanded HTML content from a dynamic web page using Selenium.
 
@@ -385,33 +386,33 @@ This function:
 
 It is the primary entry point for scraping dynamically loaded govinfo pages.
 
-##### Parameters
+##### Parameters:
 
-###### url (str)
+###### url (str):
 
 URL of the page to load.
 
-###### headless (bool, default = True)
+###### headless (bool, default = True):
 
 Whether to run Chrome in headless mode.
 
-###### save_to (str | None)
+###### save_to (str | None):
 
 Optional path to save the retrieved HTML.
 
-###### wait (int, default = 10)
+###### wait (int, default = 10):
 
 Time to wait for the page body to load.
 
-##### Returns
+##### Returns:
 
 str
 
 Fully expanded page HTML.
 
-#### extract_hearing_links
+#### **extract_hearing_links()**
 
-##### Description
+##### Description:
 
 Extracts hearing detail and transcript links from a govinfo HTML page.
 
@@ -423,13 +424,13 @@ The function searches for hearing identifiers (CHRG-*) and returns normalized UR
 
 Duplicate hearings are automatically removed.
 
-##### Parameters
+##### Parameters:
 
-###### html_text (str)
+###### html_text (str):
 
 HTML content from a govinfo page.
 
-##### Returns
+##### Returns:
 
 pandas.DataFrame
 
@@ -440,29 +441,29 @@ DataFrame with columns:
 - text_url
 
 
-#### get_session_from_url
+#### **get_session_from_url()**
 
-##### Description
+##### Description:
 
 Extracts the congressional session number from a hearing URL.
 
 For example, URLs containing CHRG-119... will return "119".
 
-##### Parameters
+##### Parameters:
 
-###### url (str)
+###### url (str):
 
 Hearing URL containing a CHRG identifier.
 
-##### Returns
+##### Returns:
 
 str | None
 
 Session number if found, otherwise None.
 
-#### get_text
+#### **get_text()**
 
-##### Description
+##### Description:
 
 Downloads and extracts transcript text from a govinfo text endpoint.
 
@@ -474,65 +475,65 @@ This function:
 
 Retries failed requests using exponential backoff
 
-##### Parameters
+##### Parameters:
 
-###### url (str)
+###### url (str):
 
 Govinfo transcript text URL.
 
-###### retries (int, default = 5)
+###### retries (int, default = 5):
 
 Number of retry attempts for failed requests.
 
-##### Returns
+##### Returns:
 
 str | None
 
 Transcript text if successful, otherwise None.
 
-#### to_html_url
+#### **to_html_url()**
 
-##### Description
+##### Description:
 
-Converts a govinfo “app/text” URL into a direct HTML transcript URL.
+Converts a govinfo "app/text" URL into a direct HTML transcript URL.
 
 This is useful when switching from application views to static content pages.
 
-##### Parameters
+##### Parameters:
 
-###### app_text_url (str)
+###### app_text_url (str):
 
 Govinfo /app/text/... URL.
 
-##### Returns
+##### Returns:
 
 str
 
 Corresponding /content/pkg/.../html/... URL.
 
-#### get_category_text
+#### **get_category_text()**
 
-##### Description
+##### Description:
 
 Extracts the hearing category label from a govinfo details page.
 
 The category is located within a specific tooltip-enabled HTML element.
 
-##### Parameters
+##### Parameters:
 
-###### url (str)
+###### url (str):
 
 Govinfo hearing details page URL.
 
-##### Returns
+##### Returns:
 
 str | None
 
 Category text if found, otherwise None.
 
-#### extract_main_text
+#### **extract_main_text()**
 
-##### Description
+##### Description:
 
 Cleans and normalizes raw congressional hearing transcript text.
 
@@ -548,127 +549,130 @@ The function removes:
 
 Optionally, it can remove ALL CAPS headings for cleaner narrative text.
 
-##### Parameters
+##### Parameters:
 
-raw (str)
+###### raw (str):
 
 Raw transcript text.
 
-###### remove_all_caps_headings (bool, default = False)
+###### remove_all_caps_headings (bool, default = False):
 
 Whether to remove ALL CAPS headings.
 
-##### Returns
+##### Returns:
+
 str
 
 Cleaned, readable transcript text.
 
-#### get_date
+#### **get_date()**
 
-##### Description
+##### Description:
 
 Extracts the first full date string from transcript text.
 
 Dates are expected in the format:
 Month Day, Year
 
-##### Parameters
-text (str)
+##### Parameters:
+
+###### text (str):
 
 Transcript text.
 
-##### Returns
+##### Returns:
 
 str
 
 Extracted date string, or "na" if none found.
 
-#### extract_hearing_title
+#### **extract_hearing_title()**
 
-##### Description
+##### Description:
 
 Extracts the hearing title from transcript text.
 
 The title is identified as one or more consecutive ALL-CAPS lines near the beginning of the document.
 
-##### Parameters
-raw_text (str)
+##### Parameters:
+
+###### raw_text (str):
 
 Raw transcript text.
 
-##### Returns
+##### Returns:
 
 str | None
 
 Hearing title if found.
 
-#### get_month
+#### **get_month()**
 
-##### Description
+##### Description:
 
 Extracts the numeric month from a date string.
 
-##### Parameters
+##### Parameters:
 
-date (str)
+###### date (str):
 
 Date string containing a month name.
 
-##### Returns
+##### Returns:
 
 int | None
 
 Month number (1–12) or None.
 
-#### get_day
+#### **get_day()**
 
-##### Description
+##### Description:
 
 Extracts the day of the month from a date string.
 
-##### Parameters
+##### Parameters:
 
-date (str)
+###### date (str):
 
 Date string.
 
-##### Returns
+##### Returns:
 
 int | str
 
 Day of month or "na".
 
-#### get_year
+#### **get_year()**
 
-##### Description
+##### Description:
 
 Extracts the year from a date string.
 
-##### Parameters
+##### Parameters:
 
-date (str)
+###### date (str):
 
 Date string.
 
-##### Returns
+##### Returns:
 
 int | str
 
 Year or "na".
 
-#### load_processed
+#### **load_processed()**
 
-##### Description
+##### Description:
 
 Loads a previously processed CSV file into a pandas DataFrame.
 
-##### Parameters
+##### Parameters:
 
-path (str)
+###### path (str):
 
 Path to the CSV file.
 
-##### Returns
+##### Returns:
 
 pandas.DataFrame
 
