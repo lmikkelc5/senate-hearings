@@ -109,7 +109,7 @@
     "href": "site/index.html#navigation",
     "title": "Senate Hearings Analysis",
     "section": "Navigation",
-    "text": "Navigation\nNew to the project? Start here:\n\nTechnical Report - Read our findings: dominant topics, temporal patterns, keyword correlations, and what they reveal about Senate priorities\nInteractive Dashboard - Explore the data yourself with our Streamlit app featuring keyword search, trend charts, and correlation heatmaps\n\nWant to reproduce or extend our work?\n\nTutorial - Step-by-step walkthrough of our data collection, cleaning, and keyword extraction process\nDocumentation - Complete API reference for all functions in the senate_hearings package\n\nSource code: GitHub Repository"
+    "text": "Navigation\nNew to the project? Start here:\n\nTechnical Report - Read our findings: dominant topics, temporal patterns, keyword correlations, and what they reveal about Senate priorities\nInteractive Dashboard - Explore the data yourself with our Streamlit app featuring keyword search, trend charts, and correlation heatmaps\n\nWant to reproduce or extend our work?\n\nTutorial - Step-by-step walkthrough of our data collection, cleaning, and keyword extraction process\nDocumentation - Complete API reference for all functions in the senate_hearings package\nPypi Package - Our packages page on pypi.org\n\nSource code: GitHub Repository"
   },
   {
     "objectID": "site/documentation.html",

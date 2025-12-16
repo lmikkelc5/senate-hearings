@@ -23,5 +23,6 @@ We built a complete data pipeline—from web scraping and text cleaning to keywo
 
 - **[Tutorial](tutorial.qmd)** - Step-by-step walkthrough of our data collection, cleaning, and keyword extraction process
 - **[Documentation](documentation.qmd)** - Complete API reference for all functions in the `senate_hearings` package
+- **[Pypi Package](https://pypi.org/project/senate-hearings/0.1.1/)** - Our packages page on pypi.org
 
 **Source code**: [GitHub Repository](https://github.com/lmikkelc5/senate-hearings)
