@@ -1,9 +1,34 @@
-Motivating question
+# Technical Analysis
 
-Where did the datea come from
+## Why we did what we did?
 
-scraping process
+Our big motivating question was how topics discussed within the Senate are affect by events in the outside world. We wanted to see what topics were discussed the most is the Senate and see if we could find any correlations or interesting things while analysing it.
+
+## Where did the data come from?
+
+At first we were using a different website but it wouldn't allow us to scrape from it so we had to pivot. We ended up using https://www.govinfo.gov/browse/committee as our source but not without issues. 
+
+### Scraping difficulties
+
+One issue we had is this webpage, once you clicked on a specific committee, used JAVA to render html after the page was loaded. Because of this we had to create functions that would use selenium expand all toggles and click buttons so that every drop down on the page would then render the html and allow us to scrape it (get_fully_expanded_html in documentation). This function saves the html into a seperate file to allow us to access it later without having to run the code everytime as it was time consuming.
+
+Another issue we ran into was that after being completely renderd the html files were incredibly large and difficult to work with. We focused on scraping 2 links (a details like and a text link) and then pulling out necessary data from those to symplify that process. We did not end up needing the details link as we were able to get all our info from the text file. After we got those links we created a function that accessed each text link and downloaded the entire text (a very large .csv).
+
+### Cleaning the data
+
+To clean the data we created a bunch of functions that cleaned this text chunk by removing formatting and used REGEX to pull dates and titles from the text to be used in our data set. We also spliced the date up into month, day and year to give us freedom more freedom for visualization. We also used the KEYBert package to extract key words from the text and then added each one to the dataframe.
+
+After getting all the data we needed we deleted both links columns and the text to decrease the size of the files and ease the load on our computers. Below is the column structure we ended up with after cleaning and organizing our data.
+
+**session | date | month | day | year | title | keywords | kw_1 | kw_2 | kw_3 | kw_4 | kw_5 | kw_6 | kw_7 | kw_8 | kw_9 | kw_10**
+
+### Decisions we had to make
+
+#### Shortening the time frame
+
+We had originally planned to scrape as much data as possible and work with that but after getting the text we ended up with a massive file that even when we split it up into smaller files it was crashing our computers and causing progress to slow to a crawl. We decided to limit our data to the last two Senate session (119, 118) which each encompass about a year worth of data. This took a massive load off of our hardware and allowed us to work with the data in a much cleaner manner. We still got plenty of data and were able to use 2 years worth of data which is enough for what we are doing. Should we ever want to take this project to the next level that is where we would start, by expanding our datasets and using out functions to clean and manipulate the data for prior years as well.
+
 
 analysis/process
 
-Talk about any decisions we made(shortening time frame)
+
