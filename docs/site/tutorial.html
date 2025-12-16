@@ -282,7 +282,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        save_to<span class="op">=</span><span class="ss">f"data/senate_html/</span><span class="sc">{</span>committee<span class="sc">.</span>lower()<span class="sc">}</span><span class="ss">.html"</span></span>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Saved committee </span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>committee<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The <code>get_fully_expanded_html()</code> function: - Opens the page in Chrome (headless mode) - Clicks all “Show more” buttons using XPath - Expands accordion/collapse elements - Returns the full page source - Saves to a file if specified</p>
+<p>The <code>get_fully_expanded_html()</code> function:</p>
+<ul>
+<li>Opens the page in Chrome (headless mode)</li>
+<li>Clicks all “Show more” buttons using XPath</li>
+<li>Expands accordion/collapse elements</li>
+<li>Returns the full page source</li>
+<li>Saves to a file if specified</li>
+</ul>
 </section>
 </section>
 <section id="stage-2-extracting-hearing-links" class="level2">
@@ -304,7 +311,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine all committees into one DataFrame</span></span>
 <span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>final_df <span class="op">=</span> pd.concat(all_dfs, ignore_index<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The <code>extract_hearing_links()</code> function creates a DataFrame with: - <code>details_url</code>: Link to the hearing details page - <code>text_url</code>: Link to the hearing transcript text</p>
+<p>The <code>extract_hearing_links()</code> function creates a DataFrame with:</p>
+<ul>
+<li><code>details_url</code>: Link to the hearing details page</li>
+<li><code>text_url</code>: Link to the hearing transcript text</li>
+</ul>
 </section>
 <section id="stage-3-downloading-hearing-transcripts" class="level2">
 <h2 class="anchored" data-anchor-id="stage-3-downloading-hearing-transcripts">Stage 3: Downloading Hearing Transcripts</h2>
@@ -324,7 +335,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Download all transcript texts (this will take a while!)</span></span>
 <span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>final_df[<span class="st">'text'</span>] <span class="op">=</span> final_df[<span class="st">'text_url'</span>].<span class="bu">apply</span>(helper_funcs.get_text)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The <code>get_text()</code> function: - Fetches the HTML page for each transcript - Extracts text from the <code>&lt;pre&gt;</code> tag - Includes retry logic with exponential backoff - Handles connection errors gracefully</p>
+<p>The <code>get_text()</code> function:</p>
+<ul>
+<li>Fetches the HTML page for each transcript</li>
+<li>Extracts text from the <code>&lt;pre&gt;</code> tag</li>
+<li>Includes retry logic with exponential backoff</li>
+<li>Handles connection errors gracefully</li>
+</ul>
 <section id="splitting-by-session" class="level3">
 <h3 class="anchored" data-anchor-id="splitting-by-session">Splitting by Session</h3>
 <p>To make the data more manageable, we split it into separate CSV files by Congressional session:</p>
@@ -379,10 +396,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Saved cleaned session </span><span class="sc">{</span>session_num<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <section id="what-the-cleaning-functions-do" class="level3">
 <h3 class="anchored" data-anchor-id="what-the-cleaning-functions-do">What the Cleaning Functions Do</h3>
-<p><strong><code>extract_main_text()</code></strong>: - Removes bracketed metadata like <code>[Senate Hearing 119-123]</code> - Strips formatting lines (<code>====</code>, <code>----</code>, <code>____</code>) - Removes page numbers - Cleans speaker labels (<code>CHAIRMAN SMITH:</code>) - Removes statement headers - Collapses excessive whitespace</p>
-<p><strong><code>get_date()</code></strong>: - Searches for date patterns like “January 15, 2024” - Returns the first date found (typically the hearing date) - Returns “na” if no date found</p>
-<p><strong><code>extract_hearing_title()</code></strong>: - Finds consecutive ALL-CAPS lines at the start - These typically contain the hearing title - Joins multi-line titles into a single string</p>
-<p><strong>Date parsing functions</strong> (<code>get_month()</code>, <code>get_day()</code>, <code>get_year()</code>): - Extract individual date components - Convert month names to numbers (January → 1) - Handle missing dates gracefully</p>
+<p><strong><code>extract_main_text()</code></strong>:</p>
+<ul>
+<li>Removes bracketed metadata like <code>[Senate Hearing 119-123]</code></li>
+<li>Strips formatting lines (<code>====</code>, <code>----</code>, <code>____</code>)</li>
+<li>Removes page numbers</li>
+<li>Cleans speaker labels (<code>CHAIRMAN SMITH:</code>)</li>
+<li>Removes statement headers</li>
+<li>Collapses excessive whitespace</li>
+</ul>
+<p><strong><code>get_date()</code></strong>:</p>
+<ul>
+<li>Searches for date patterns like “January 15, 2024”</li>
+<li>Returns the first date found (typically the hearing date)</li>
+<li>Returns “na” if no date found</li>
+</ul>
+<p><strong><code>extract_hearing_title()</code></strong>:</p>
+<ul>
+<li>Finds consecutive ALL-CAPS lines at the start</li>
+<li>These typically contain the hearing title</li>
+<li>Joins multi-line titles into a single string</li>
+</ul>
+<p><strong>Date parsing functions</strong> (<code>get_month()</code>, <code>get_day()</code>, <code>get_year()</code>):</p>
+<ul>
+<li>Extract individual date components</li>
+<li>Convert month names to numbers (January → 1)</li>
+<li>Handle missing dates gracefully</li>
+</ul>
 </section>
 </section>
 <section id="final-data-structure" class="level2">
@@ -476,7 +516,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="extending-the-pipeline" class="level3">
 <h3 class="anchored" data-anchor-id="extending-the-pipeline">Extending the Pipeline</h3>
-<p>You can easily add more extraction functions to pull out: - Committee names from titles - Witness names and titles - Topics using keyword extraction (see our KeyBERT implementation) - Voting records or outcomes</p>
+<p>You can easily add more extraction functions to pull out:</p>
+<ul>
+<li>Committee names from titles</li>
+<li>Witness names and titles</li>
+<li>Topics using keyword extraction (see our KeyBERT implementation)</li>
+<li>Voting records or outcomes</li>
+</ul>
 </section>
 </section>
 <section id="stage-5-keyword-extraction-with-a-keybert-inspired-approach" class="level2">
