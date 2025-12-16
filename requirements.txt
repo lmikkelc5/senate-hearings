@@ -1,5 +1,5 @@
 -e .
-streamlit>=1.52.1
+streamlit>=1.41
 seaborn>=0.13.2
 pandas>=2.3.3
 numpy>=2.3.4
