@@ -6,7 +6,7 @@ Author: Mikkel Christensen, Corbin Brinkerhoff
 License: MIT
 Project-URL: Homepage, https://github.com/lmikkelc5/senate-hearings
 Keywords: scraping,nlp,senate,transcripts,streamlit,quarto
-Requires-Python: >=3.11
+Requires-Python: <3.13,>=3.11
 Description-Content-Type: text/markdown
 Requires-Dist: beautifulsoup4>=4.12.0
 Requires-Dist: ipykernel>=7.1.0
@@ -17,11 +17,10 @@ Requires-Dist: pandas>=2.3.3
 Requires-Dist: playwright>=1.55.0
 Requires-Dist: requests>=2.32.5
 Requires-Dist: selenium>=4.38.0
+Requires-Dist: streamlit>=1.52.1
 Provides-Extra: dev
-Requires-Dist: ipykernel>=7.1.0; extra == "dev"
 Requires-Dist: spacy>=3.8.11; extra == "dev"
 Requires-Dist: sentence-transformers>=5.2.0; extra == "dev"
-Requires-Dist: streamlit>=1.52.1; extra == "dev"
 
 ## URLs
 https://www.govinfo.gov/browse/committee
