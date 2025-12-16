@@ -123,7 +123,8 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#basic-overview" id="toc-basic-overview" class="nav-link active" data-scroll-target="#basic-overview">Basic Overview</a></li>
+  <li><a href="#project-overview" id="toc-project-overview" class="nav-link active" data-scroll-target="#project-overview">Project Overview</a></li>
+  <li><a href="#navigation" id="toc-navigation" class="nav-link" data-scroll-target="#navigation">Navigation</a></li>
   </ul>
 </nav>
     </div>
@@ -149,10 +150,26 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="basic-overview" class="level2">
-<h2 class="anchored" data-anchor-id="basic-overview">Basic Overview</h2>
-<p>For this project we built a package that will help when webscraping Senate Hearing data from https://www.govinfo.gov/browse/committee. We have included in this website the full documentation to allow for the recreation of our project using this package along with a written report of our findings. The documentation can be found <a href="../site/documentation.html">here</a> and the written report can be found <a href="../site/technical_report.html">here</a>.</p>
-<p>Also included will be a tutorial that will help with clarifying the usage of any functions we included and a link to a streamlit app that hosts a demonstration of our EDA including visuals and explanations of each item. The tutorial can be found <a href="../site/tutorial.html">here</a> and the streamlit can be found <a href="../site/technical_report.html">here</a>.</p>
+<section id="project-overview" class="level2">
+<h2 class="anchored" data-anchor-id="project-overview">Project Overview</h2>
+<p>What topics dominate U.S. Senate hearings, and how do they shift in response to real-world events? This project analyzes over 1,000 Senate hearing transcripts from 2023-2025 (sessions 118-119), extracting and tracking keywords to reveal which issues receive the most legislative attention, how topics cluster together, and how discussion priorities evolve over time.</p>
+<p>We built a complete data pipeline—from web scraping and text cleaning to keyword extraction and interactive visualization—packaged as a reusable Python tool for analyzing congressional hearing data.</p>
+<p><strong>Project by</strong>: Mikkel Christensen and Corbin Brinkerhoff</p>
+<p><strong>Dataset</strong>: Senate hearings from sessions 118-119 (~2023-2025) scraped from <a href="https://www.govinfo.gov/browse/committee">govinfo.gov</a></p>
+</section>
+<section id="navigation" class="level2">
+<h2 class="anchored" data-anchor-id="navigation">Navigation</h2>
+<p><strong>New to the project? Start here:</strong></p>
+<ul>
+<li><strong><a href="../site/technical_report.html">Technical Report</a></strong> - Read our findings: dominant topics, temporal patterns, keyword correlations, and what they reveal about Senate priorities</li>
+<li><strong><a href="https://senate-hearings-555.streamlit.app/">Interactive Dashboard</a></strong> - Explore the data yourself with our Streamlit app featuring keyword search, trend charts, and correlation heatmaps</li>
+</ul>
+<p><strong>Want to reproduce or extend our work?</strong></p>
+<ul>
+<li><strong><a href="../site/tutorial.html">Tutorial</a></strong> - Step-by-step walkthrough of our data collection, cleaning, and keyword extraction process</li>
+<li><strong><a href="../site/documentation.html">Documentation</a></strong> - Complete API reference for all functions in the <code>senate_hearings</code> package</li>
+</ul>
+<p><strong>Source code</strong>: <a href="https://github.com/lmikkelc5/senate-hearings">GitHub Repository</a></p>
 
 
 </section>

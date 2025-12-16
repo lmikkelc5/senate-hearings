@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: senate-hearings
-Version: 0.1.0
+Version: 0.1.1
 Summary: Scrape and clean U.S. Senate hearing transcripts.
 Author: Mikkel Christensen, Corbin Brinkerhoff
 License-Expression: MIT
@@ -10,7 +10,7 @@ Classifier: Programming Language :: Python :: 3
 Classifier: Programming Language :: Python :: 3 :: Only
 Classifier: Programming Language :: Python :: 3.11
 Classifier: Programming Language :: Python :: 3.12
-Requires-Python: <3.13,>=3.11
+Requires-Python: >=3.11
 Description-Content-Type: text/markdown
 License-File: LICENSE
 Requires-Dist: beautifulsoup4>=4.12.0

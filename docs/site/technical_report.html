@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Mikkel Christensen">
+<meta name="author" content="Corbin Brinkerhoff">
 
-<title>technical_report – Senate Hearings Project</title>
+<title>Technical Analysis – Senate Hearings Project</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -125,6 +127,7 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#technical-analysis" id="toc-technical-analysis" class="nav-link active" data-scroll-target="#technical-analysis">Technical Analysis</a>
   <ul class="collapse">
+  <li><a href="#executive-summary" id="toc-executive-summary" class="nav-link" data-scroll-target="#executive-summary">Executive Summary</a></li>
   <li><a href="#research-question-and-motivation" id="toc-research-question-and-motivation" class="nav-link" data-scroll-target="#research-question-and-motivation">Research question and motivation</a></li>
   <li><a href="#where-did-the-data-come-from" id="toc-where-did-the-data-come-from" class="nav-link" data-scroll-target="#where-did-the-data-come-from">Where did the data come from?</a>
   <ul class="collapse">
@@ -140,18 +143,48 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#interactive-dashboard" id="toc-interactive-dashboard" class="nav-link" data-scroll-target="#interactive-dashboard">Interactive Dashboard</a></li>
   <li><a href="#key-findings" id="toc-key-findings" class="nav-link" data-scroll-target="#key-findings">Key Findings</a></li>
   </ul></li>
+  <li><a href="#future-work-and-recommendations" id="toc-future-work-and-recommendations" class="nav-link" data-scroll-target="#future-work-and-recommendations">Future Work and Recommendations</a></li>
   </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Technical Analysis</h1>
+</div>
 
 
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Authors</div>
+    <div class="quarto-title-meta-contents">
+             <p>Mikkel Christensen </p>
+             <p>Corbin Brinkerhoff </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
 
 
 <section id="technical-analysis" class="level1">
 <h1>Technical Analysis</h1>
+<section id="executive-summary" class="level2">
+<h2 class="anchored" data-anchor-id="executive-summary">Executive Summary</h2>
+<p>This project analyzes U.S. Senate hearing transcripts from 2023-2025 (sessions 118-119) to understand legislative priorities and how they evolve in response to external events. We built a complete data pipeline that scrapes hearing data from govinfo.gov, extracts keywords using a custom KeyBERT-inspired approach with sentence transformers, and performs correlation analysis to reveal topic relationships.</p>
+<p><strong>Key Findings</strong>: Budget appropriations, agency oversight (EPA, FCC, DOD), and healthcare consistently dominated Senate attention. Temporal analysis revealed both predictable seasonal patterns (budget cycles) and event-driven spikes (natural disasters, international crises). Statistical analysis uncovered distinct thematic clusters—healthcare ecosystems, energy-environment nexus, and defense-security groupings—showing how policy domains interconnect in legislative oversight.</p>
+<p><strong>Technical Achievements</strong>: We developed reusable Python tools for congressional data analysis, including automated web scraping with Selenium, regex-based text extraction, custom keyword extraction optimized for commodity hardware, and an interactive Streamlit dashboard. Our approach successfully balanced analytical rigor with practical hardware constraints, making large-scale congressional text analysis accessible without requiring specialized computing resources.</p>
+</section>
 <section id="research-question-and-motivation" class="level2">
 <h2 class="anchored" data-anchor-id="research-question-and-motivation">Research question and motivation</h2>
 <p>We set out to answer a clear question: <u>How do U.S. Senate hearing topics shift in response to outside events, which issues dominate the agenda, and which topics tend to travel together?</u> Concretely, we wanted to (1) track which topics receive the most attention, (2) see how attention rises or falls with external events and the legislative calendar, and (3) uncover correlations and clusters of related topics across hearings.</p>
@@ -260,9 +293,19 @@ ul.task-list li input[type="checkbox"] {
 <p><strong>Evolution of Legislative Priorities</strong>: Comparing earlier months (2023) to more recent hearings (2024-2025) revealed shifting priorities. While budget and agency oversight remained constant, newer concerns around emerging technologies, supply chain resilience, and workforce issues gained prominence over time. This evolution suggests the Senate adapting its oversight focus to emerging challenges while maintaining core institutional responsibilities.</p>
 <p><strong>Limitations and Context</strong>: These patterns reflect hearing topics, not necessarily legislative outcomes or the depth of discussion. High-frequency keywords may indicate either sustained important issues or routine procedural oversight. Additionally, our two-year window captures only recent Senate activity; longer-term historical data would be needed to identify multi-year trends or generational shifts in legislative priorities.</p>
 <p><strong>Addressing Our Motivating Questions</strong>: This analysis successfully addressed all three of our original research goals. First, we identified <u>which topics dominate Senate attention</u> through frequency analysis, revealing budget, agency oversight, and healthcare as persistent priorities. Second, we demonstrated <u>how Senate discussions respond to external events</u> through temporal analysis, showing crisis-driven spikes in disaster and international relations keywords alongside predictable seasonal budget patterns. Third, we found <u>meaningful correlations between topics</u> using NPMI and Pearson correlation, uncovering thematic clusters (healthcare ecosystem, energy-environment nexus, defense-security grouping) that reveal how policy domains interconnect in legislative oversight. Together, these findings established a quantitative foundation for understanding the Senate’s policy attention landscape, revealing both the stable institutional priorities and the dynamic responsiveness to current events that characterize legislative oversight.</p>
-
-
 </section>
+</section>
+<section id="future-work-and-recommendations" class="level2">
+<h2 class="anchored" data-anchor-id="future-work-and-recommendations">Future Work and Recommendations</h2>
+<p><strong>Expand Historical Coverage</strong>: Our current analysis spans only two years (2023-2025). Extending the dataset to include earlier congressional sessions (104-117) would enable longitudinal analysis of how legislative priorities shift over decades, revealing generational changes in policy focus and the impact of major historical events (9/11, 2008 financial crisis, COVID-19).</p>
+<p><strong>Enhanced Topic Modeling</strong>: While our keyword extraction successfully identified major themes, implementing more sophisticated NLP techniques like Latent Dirichlet Allocation (LDA) or BERTopic could uncover subtler thematic patterns and track how specific policy narratives evolve within broader topic categories.</p>
+<p><strong>Cross-Reference External Events</strong>: Systematically correlating keyword spikes with dated external events (natural disasters, legislation votes, international incidents) would provide quantitative validation of our observation that Senate discussions respond to real-world developments. This could involve building a timeline database and calculating temporal correlations.</p>
+<p><strong>Committee-Level Analysis</strong>: Our current analysis aggregates across all Senate committees. Disaggregating by committee (Finance, Armed Services, HELP, etc.) would reveal how different committees specialize in distinct policy domains and whether certain cross-cutting issues (like funding or technology) bridge committee boundaries.</p>
+<p><strong>Predictive Modeling</strong>: With sufficient historical data, machine learning models could potentially predict which topics are likely to receive increased attention based on current events, seasonal patterns, and political cycles—useful for policymakers, advocacy groups, and researchers.</p>
+<p><strong>Sentiment and Tone Analysis</strong>: Beyond topic identification, analyzing the sentiment and tone of hearing discussions could reveal whether certain issues receive more contentious debate versus consensus treatment, and how this changes over time.</p>
+<p><strong>Practical Recommendations</strong>: - <strong>For researchers</strong>: Our <code>senate_hearings</code> package provides a reusable foundation for congressional text analysis; extending it to House hearings or other legislative bodies would broaden its utility - <strong>For policymakers</strong>: The correlation analysis reveals which policy domains naturally interconnect, suggesting opportunities for integrated legislative approaches - <strong>For the public</strong>: The Streamlit dashboard demonstrates how complex legislative data can be made accessible; similar tools could increase civic engagement and government transparency</p>
+
+
 </section>
 </section>
 
