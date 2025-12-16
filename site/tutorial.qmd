@@ -309,9 +309,17 @@ You can easily add more extraction functions to pull out:
 - Topics using keyword extraction (see our KeyBERT implementation)
 - Voting records or outcomes
 
-## Stage 5: Keyword Extraction with KeyBERT
+## Stage 5: Keyword Extraction with a KeyBERT-Inspired Approach
 
-After cleaning the transcripts, we extract the most important keywords from each hearing using KeyBERT with Maximal Marginal Relevance (MMR) for diversity.
+After cleaning the transcripts, we extract the most important keywords from each hearing using a **custom KeyBERT-inspired approach** with Maximal Marginal Relevance (MMR) for diversity.
+
+### Why a Custom Implementation?
+
+We initially tried the official KeyBERT package, but it was too slow on our laptops for processing thousands of hearing transcripts. Instead, we built our own lightweight implementation that:
+- Uses the same core algorithm (embedding-based keyword extraction with MMR)
+- Runs significantly faster on commodity hardware
+- Gives us full control over the extraction pipeline
+- Allows us to integrate custom filtering and normalization
 
 ### Why Keyword Extraction?
 
@@ -321,7 +329,7 @@ Senate hearing transcripts are long documents (often 50+ pages). Extracting keyw
 - Track how issues evolve over time
 - Enable better search and filtering in dashboards
 
-### The KeyBERT Approach
+### The KeyBERT-Inspired Approach
 
 We use sentence transformers to create embeddings of both the documents and candidate phrases, then select keywords that are:
 1. **Relevant** to the document content (high similarity)
@@ -330,7 +338,7 @@ We use sentence transformers to create embeddings of both the documents and cand
 
 ### Setting Up Keyword Extraction
 
-First, install the required packages:
+This custom implementation requires only the core ML libraries (no KeyBERT package needed):
 
 ```python
 pip install sentence-transformers scikit-learn
