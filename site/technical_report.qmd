@@ -1,5 +1,13 @@
 # Technical Analysis
 
+## Executive Summary
+
+This project analyzes U.S. Senate hearing transcripts from 2023-2025 (sessions 118-119) to understand legislative priorities and how they evolve in response to external events. We built a complete data pipeline that scrapes hearing data from govinfo.gov, extracts keywords using a custom KeyBERT-inspired approach with sentence transformers, and performs correlation analysis to reveal topic relationships.
+
+**Key Findings**: Budget appropriations, agency oversight (EPA, FCC, DOD), and healthcare consistently dominated Senate attention. Temporal analysis revealed both predictable seasonal patterns (budget cycles) and event-driven spikes (natural disasters, international crises). Statistical analysis uncovered distinct thematic clusters—healthcare ecosystems, energy-environment nexus, and defense-security groupings—showing how policy domains interconnect in legislative oversight.
+
+**Technical Achievements**: We developed reusable Python tools for congressional data analysis, including automated web scraping with Selenium, regex-based text extraction, custom keyword extraction optimized for commodity hardware, and an interactive Streamlit dashboard. Our approach successfully balanced analytical rigor with practical hardware constraints, making large-scale congressional text analysis accessible without requiring specialized computing resources.
+
 ## Research question and motivation
 
 We set out to answer a clear question: [How do U.S. Senate hearing topics shift in response to outside events, which issues dominate the agenda, and which topics tend to travel together?]{.underline} Concretely, we wanted to (1) track which topics receive the most attention, (2) see how attention rises or falls with external events and the legislative calendar, and (3) uncover correlations and clusters of related topics across hearings.
@@ -134,5 +142,24 @@ These patterns reflect hearing topics, not necessarily legislative outcomes or t
 
 **Addressing Our Motivating Questions**:
 This analysis successfully addressed all three of our original research goals. First, we identified [which topics dominate Senate attention]{.underline} through frequency analysis, revealing budget, agency oversight, and healthcare as persistent priorities. Second, we demonstrated [how Senate discussions respond to external events]{.underline} through temporal analysis, showing crisis-driven spikes in disaster and international relations keywords alongside predictable seasonal budget patterns. Third, we found [meaningful correlations between topics]{.underline} using NPMI and Pearson correlation, uncovering thematic clusters (healthcare ecosystem, energy-environment nexus, defense-security grouping) that reveal how policy domains interconnect in legislative oversight. Together, these findings established a quantitative foundation for understanding the Senate's policy attention landscape, revealing both the stable institutional priorities and the dynamic responsiveness to current events that characterize legislative oversight.
+
+## Future Work and Recommendations
+
+**Expand Historical Coverage**: Our current analysis spans only two years (2023-2025). Extending the dataset to include earlier congressional sessions (104-117) would enable longitudinal analysis of how legislative priorities shift over decades, revealing generational changes in policy focus and the impact of major historical events (9/11, 2008 financial crisis, COVID-19).
+
+**Enhanced Topic Modeling**: While our keyword extraction successfully identified major themes, implementing more sophisticated NLP techniques like Latent Dirichlet Allocation (LDA) or BERTopic could uncover subtler thematic patterns and track how specific policy narratives evolve within broader topic categories.
+
+**Cross-Reference External Events**: Systematically correlating keyword spikes with dated external events (natural disasters, legislation votes, international incidents) would provide quantitative validation of our observation that Senate discussions respond to real-world developments. This could involve building a timeline database and calculating temporal correlations.
+
+**Committee-Level Analysis**: Our current analysis aggregates across all Senate committees. Disaggregating by committee (Finance, Armed Services, HELP, etc.) would reveal how different committees specialize in distinct policy domains and whether certain cross-cutting issues (like funding or technology) bridge committee boundaries.
+
+**Predictive Modeling**: With sufficient historical data, machine learning models could potentially predict which topics are likely to receive increased attention based on current events, seasonal patterns, and political cycles—useful for policymakers, advocacy groups, and researchers.
+
+**Sentiment and Tone Analysis**: Beyond topic identification, analyzing the sentiment and tone of hearing discussions could reveal whether certain issues receive more contentious debate versus consensus treatment, and how this changes over time.
+
+**Practical Recommendations**:
+- **For researchers**: Our `senate_hearings` package provides a reusable foundation for congressional text analysis; extending it to House hearings or other legislative bodies would broaden its utility
+- **For policymakers**: The correlation analysis reveals which policy domains naturally interconnect, suggesting opportunities for integrated legislative approaches
+- **For the public**: The Streamlit dashboard demonstrates how complex legislative data can be made accessible; similar tools could increase civic engagement and government transparency
 
 
