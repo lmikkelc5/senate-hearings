@@ -31,11 +31,19 @@ pip install senate-hearings
 
 ### Home page (Github Pages)
 
+https://lmikkelc5.github.io/senate-hearings/site/
+
 ### Full documentation (GitHub Pages) 
 
+https://lmikkelc5.github.io/senate-hearings/site/documentation.html
 
 ### Tutorial (Github Pages)
 
+https://lmikkelc5.github.io/senate-hearings/site/tutorial.html
+
+### Technical Report
+
+https://lmikkelc5.github.io/senate-hearings/site/technical_report.html
 
 ### Interactive EDA (Streamlit) 
 
