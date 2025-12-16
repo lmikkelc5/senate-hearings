@@ -16,6 +16,7 @@ Requires-Dist: numpy>=2.3.4
 Requires-Dist: pandas>=2.3.3
 Requires-Dist: playwright>=1.55.0
 Requires-Dist: requests>=2.32.5
+Requires-Dist: seaborn>=0.13.2
 Requires-Dist: selenium>=4.38.0
 Requires-Dist: streamlit>=1.52.1
 Provides-Extra: dev
