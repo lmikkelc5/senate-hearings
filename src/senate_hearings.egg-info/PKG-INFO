@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: senate-hearings
-Version: 0.1.1
+Version: 0.1.0
 Summary: Scrape and clean U.S. Senate hearing transcripts.
 Author: Mikkel Christensen, Corbin Brinkerhoff
 License-Expression: MIT
@@ -21,6 +21,7 @@ Requires-Dist: pyyaml>=6.0.3
 Requires-Dist: requests>=2.32.5
 Requires-Dist: scipy>=1.16.3
 Requires-Dist: selenium>=4.38.0
+Requires-Dist: seaborn>=0.13.2
 Provides-Extra: dev
 Requires-Dist: build; extra == "dev"
 Requires-Dist: twine; extra == "dev"
@@ -28,8 +29,6 @@ Requires-Dist: pytest; extra == "dev"
 Requires-Dist: ipykernel>=7.1.0; extra == "dev"
 Requires-Dist: nbclient>=0.10.2; extra == "dev"
 Requires-Dist: nbformat>=5.10.4; extra == "dev"
-Provides-Extra: viz
-Requires-Dist: seaborn>=0.13.2; extra == "viz"
 Provides-Extra: app
 Requires-Dist: streamlit>=1.52.1; extra == "app"
 Provides-Extra: nlp
@@ -70,13 +69,23 @@ pip install senate-hearings
 
 ### Home page (Github Pages)
 
+https://lmikkelc5.github.io/senate-hearings/site/
+
 ### Full documentation (GitHub Pages) 
 
+https://lmikkelc5.github.io/senate-hearings/site/documentation.html
 
 ### Tutorial (Github Pages)
 
+https://lmikkelc5.github.io/senate-hearings/site/tutorial.html
+
+### Technical Report
+
+https://lmikkelc5.github.io/senate-hearings/site/technical_report.html
 
 ### Interactive EDA (Streamlit) 
+
+Streamlit puts apps to sleep after 12 hours of inactivity, if you need us to reactivate it email me at mikkelc5@byu.edu
 
 https://senate-hearings-555.streamlit.app/
 

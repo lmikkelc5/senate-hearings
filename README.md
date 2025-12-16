@@ -47,6 +47,8 @@ https://lmikkelc5.github.io/senate-hearings/site/technical_report.html
 
 ### Interactive EDA (Streamlit) 
 
+Streamlit puts apps to sleep after 12 hours of inactivity, if you need us to reactivate it email me at mikkelc5@byu.edu
+
 https://senate-hearings-555.streamlit.app/
 
 ### Source code (GitHub) 

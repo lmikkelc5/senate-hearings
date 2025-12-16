@@ -125,7 +125,7 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#technical-analysis" id="toc-technical-analysis" class="nav-link active" data-scroll-target="#technical-analysis">Technical Analysis</a>
   <ul class="collapse">
-  <li><a href="#why-we-did-what-we-did" id="toc-why-we-did-what-we-did" class="nav-link" data-scroll-target="#why-we-did-what-we-did">Why we did what we did?</a></li>
+  <li><a href="#research-question-and-motivation" id="toc-research-question-and-motivation" class="nav-link" data-scroll-target="#research-question-and-motivation">Research question and motivation</a></li>
   <li><a href="#where-did-the-data-come-from" id="toc-where-did-the-data-come-from" class="nav-link" data-scroll-target="#where-did-the-data-come-from">Where did the data come from?</a>
   <ul class="collapse">
   <li><a href="#scraping-difficulties" id="toc-scraping-difficulties" class="nav-link" data-scroll-target="#scraping-difficulties">Scraping difficulties</a></li>
@@ -152,9 +152,9 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="technical-analysis" class="level1">
 <h1>Technical Analysis</h1>
-<section id="why-we-did-what-we-did" class="level2">
-<h2 class="anchored" data-anchor-id="why-we-did-what-we-did">Why we did what we did?</h2>
-<p>Our big motivating question was how topics discussed within the Senate are affect by events in the outside world. We wanted to see what topics were discussed the most is the Senate and see if we could find any correlations or interesting things while analysing it.</p>
+<section id="research-question-and-motivation" class="level2">
+<h2 class="anchored" data-anchor-id="research-question-and-motivation">Research question and motivation</h2>
+<p>We set out to answer a clear question: <u>How do U.S. Senate hearing topics shift in response to outside events, which issues dominate the agenda, and which topics tend to travel together?</u> Concretely, we wanted to (1) track which topics receive the most attention, (2) see how attention rises or falls with external events and the legislative calendar, and (3) uncover correlations and clusters of related topics across hearings.</p>
 </section>
 <section id="where-did-the-data-come-from" class="level2">
 <h2 class="anchored" data-anchor-id="where-did-the-data-come-from">Where did the data come from?</h2>
@@ -196,7 +196,7 @@ ul.task-list li input[type="checkbox"] {
 <section id="keyword-co-occurrence-and-association" class="level3">
 <h3 class="anchored" data-anchor-id="keyword-co-occurrence-and-association">Keyword Co-occurrence and Association</h3>
 <p>Understanding which topics appear together in hearings reveals thematic clusters and policy connections:</p>
-<p><strong>Co-occurrence heatmaps</strong>: We built a matrix showing how often keyword pairs appear in the same hearing. This raw co-occurrence data highlights which topics are naturally linked—for example, “health care” frequently appears alongside “Medicare” and “Medicaid.”</p>
+<p><strong>Co-occurrence heatmaps</strong>: We built a matrix showing how often keyword pairs appear in the same hearing. This raw co-occurrence data highlights which topics are naturally linked. For example, “health care” frequently appears alongside “Medicare” and “Medicaid.”</p>
 <p><strong>Correlation analysis (Pearson)</strong>: We computed Pearson correlation coefficients on binary keyword presence (1 if keyword appears in a hearing, 0 otherwise) across the top 10 keywords. This measures linear relationships between keyword occurrences:</p>
 <ul>
 <li><strong>Positive correlation</strong>: Keywords that tend to appear together</li>
