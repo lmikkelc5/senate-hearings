@@ -292,7 +292,7 @@ trim_candidates_by_frequency(candidates, X, max_candidates=2)
 # ['ai', 'ml']
 ```
 
-#### **_safe_click()**
+#### **safe_click()**
 
 ##### Description:
 

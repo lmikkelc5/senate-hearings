@@ -76,6 +76,7 @@ for i, link in enumerate(page_links['url']):
 ```
 
 The `get_fully_expanded_html()` function:
+
 - Opens the page in Chrome (headless mode)
 - Clicks all "Show more" buttons using XPath
 - Expands accordion/collapse elements
@@ -106,6 +107,7 @@ final_df = pd.concat(all_dfs, ignore_index=True)
 ```
 
 The `extract_hearing_links()` function creates a DataFrame with:
+
 - `details_url`: Link to the hearing details page
 - `text_url`: Link to the hearing transcript text
 
@@ -132,6 +134,7 @@ final_df['text'] = final_df['text_url'].apply(helper_funcs.get_text)
 ```
 
 The `get_text()` function:
+
 - Fetches the HTML page for each transcript
 - Extracts text from the `<pre>` tag
 - Includes retry logic with exponential backoff
@@ -198,6 +201,7 @@ for session_num in sessions:
 ### What the Cleaning Functions Do
 
 **`extract_main_text()`**:
+
 - Removes bracketed metadata like `[Senate Hearing 119-123]`
 - Strips formatting lines (`====`, `----`, `____`)
 - Removes page numbers
@@ -206,16 +210,19 @@ for session_num in sessions:
 - Collapses excessive whitespace
 
 **`get_date()`**:
+
 - Searches for date patterns like "January 15, 2024"
 - Returns the first date found (typically the hearing date)
 - Returns "na" if no date found
 
 **`extract_hearing_title()`**:
+
 - Finds consecutive ALL-CAPS lines at the start
 - These typically contain the hearing title
 - Joins multi-line titles into a single string
 
 **Date parsing functions** (`get_month()`, `get_day()`, `get_year()`):
+
 - Extract individual date components
 - Convert month names to numbers (January → 1)
 - Handle missing dates gracefully
@@ -288,22 +295,27 @@ for session_num in [119, 118]:
 ## Tips and Considerations
 
 ### Handling Rate Limits
+
 - The `get_text()` function includes retry logic with exponential backoff
 - Consider adding delays between requests if you hit rate limits
 - Save progress frequently so you don't lose work
 
 ### Memory Management
+
 - Processing all sessions at once can use a lot of memory
 - Split by session to keep DataFrames manageable
 - Save intermediate results after each stage
 
 ### Error Handling
+
 - Some hearings might not have text available
 - Date extraction might fail for non-standard formats
 - Always check for null values after extraction
 
 ### Extending the Pipeline
+
 You can easily add more extraction functions to pull out:
+
 - Committee names from titles
 - Witness names and titles
 - Topics using keyword extraction (see our KeyBERT implementation)
@@ -316,6 +328,7 @@ After cleaning the transcripts, we extract the most important keywords from each
 ### Why a Custom Implementation?
 
 We initially tried the official KeyBERT package, but it was too slow on our laptops for processing thousands of hearing transcripts. Instead, we built our own lightweight implementation that:
+
 - Uses the same core algorithm (embedding-based keyword extraction with MMR)
 - Runs significantly faster on commodity hardware
 - Gives us full control over the extraction pipeline
@@ -324,6 +337,7 @@ We initially tried the official KeyBERT package, but it was too slow on our lapt
 ### Why Keyword Extraction?
 
 Senate hearing transcripts are long documents (often 50+ pages). Extracting keywords helps us:
+
 - Quickly identify the main topics discussed in each hearing
 - Compare topics across different sessions and committees
 - Track how issues evolve over time
@@ -332,6 +346,7 @@ Senate hearing transcripts are long documents (often 50+ pages). Extracting keyw
 ### The KeyBERT-Inspired Approach
 
 We use sentence transformers to create embeddings of both the documents and candidate phrases, then select keywords that are:
+
 1. **Relevant** to the document content (high similarity)
 2. **Diverse** from each other (not redundant)
 3. **Meaningful** (filtered to remove boilerplate and generic terms)
