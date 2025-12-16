@@ -8,34 +8,53 @@ version = "0.1.0"
 description = "Scrape and clean U.S. Senate hearing transcripts."
 readme = "README.md"
 requires-python = ">=3.11,<3.13"
-license = { text = "MIT" }
+license = "MIT"
+license-files = ["LICENSE"]
 authors = [
   { name = "Mikkel Christensen" },
   { name = "Corbin Brinkerhoff" }
 ]
 keywords = ["scraping", "nlp", "senate", "transcripts", "streamlit", "quarto"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+]
 dependencies = [
-    "beautifulsoup4>=4.12.0",
-    "ipykernel>=7.1.0",
-    "nbclient>=0.10.2",
-    "nbformat>=5.10.4",
-    "numpy>=2.3.4",
-    "pandas>=2.3.3",
-    "playwright>=1.55.0",
-    "pyyaml>=6.0.3",
-    "requests>=2.32.5",
-    "scipy>=1.16.3",
-    "seaborn>=0.13.2",
-    "selenium>=4.38.0",
-    "streamlit>=1.52.1",
+  "beautifulsoup4>=4.12.0",
+  "numpy>=2.3.4",
+  "pandas>=2.3.3",
+  "playwright>=1.55.0",
+  "pyyaml>=6.0.3",
+  "requests>=2.32.5",
+  "scipy>=1.16.3",
+  "selenium>=4.38.0"
 ]
 
 [project.optional-dependencies]
 dev = [
-  "spacy>=3.8.11",
-  "sentence-transformers>=5.2.0",
-  
+  "build",
+  "twine",
+  "pytest",
+  "ipykernel>=7.1.0",
+  "nbclient>=0.10.2",
+  "nbformat>=5.10.4"
 ]
+
+viz = [
+  "seaborn>=0.13.2"
+]
+
+app = [
+  "streamlit>=1.52.1"
+]
+
+nlp = [
+  "spacy>=3.8.11",
+  "sentence-transformers>=5.2.0"
+]
+
 
 [project.urls]
 Homepage = "https://github.com/lmikkelc5/senate-hearings"
