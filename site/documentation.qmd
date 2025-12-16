@@ -1,5 +1,31 @@
 # Documentation
 
+## Summary
+
+**Senate Hearings** is a comprehensive Python package for scraping, extracting, and analyzing congressional hearing data from the govinfo website. It combines web scraping with natural language processing techniques to automatically identify, retrieve, and process hearing transcripts and metadata.
+
+The package provides a complete pipeline for:
+
+1. **Web Scraping and Content Extraction**: Dynamically retrieves fully expanded HTML content from govinfo pages using Selenium, handling JavaScript-rendered content and interactive elements.
+
+2. **Transcript Parsing**: Extracts and cleans raw congressional hearing transcripts, removing formatting artifacts, metadata, and structural noise to produce readable narrative text.
+
+3. **Metadata Extraction**: Automatically extracts key metadata from hearing documents including titles, dates, categories, and session information.
+
+4. **Keyword Extraction and Normalization**: Implements advanced keyword extraction using Maximal Marginal Relevance (MMR) to identify semantically relevant and diverse keywords from hearing content. Keywords are filtered, normalized, and consolidated for consistency.
+
+5. **Data Management**: Processes and manages large collections of hearing data, supporting CSV I/O operations and structured data organization.
+
+### Key Features:
+
+- **Robust Web Scraping**: Handles dynamic content, timeouts, and page interactions gracefully
+- **Intelligent Keyword Filtering**: Removes banned terms and person names automatically
+- **Semantic Keyword Selection**: Uses embeddings and MMR to select diverse, relevant keywords
+- **Text Normalization**: Converts variant forms (abbreviations, capitalization) to canonical representations
+- **Scalable Data Processing**: Processes congressional session data efficiently in batch operations
+
+The package is ideal for researchers, data scientists, and analysts working with legislative records, policy analysis, and congressional hearing data.
+
 ## Functions
 
 #### **is_banned_candidate()**
