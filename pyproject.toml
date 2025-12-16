@@ -7,7 +7,7 @@ name = "senate-hearings"
 version = "0.1.0"
 description = "Scrape and clean U.S. Senate hearing transcripts."
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.10,<3.13"
 license = { text = "MIT" }
 authors = [
   { name = "Mikkel Christensen" },
