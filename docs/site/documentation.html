@@ -187,25 +187,40 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="functions" class="level2">
 <h2 class="anchored" data-anchor-id="functions">Functions</h2>
 <section id="is_banned_candidate" class="level4">
-<h4 class="anchored" data-anchor-id="is_banned_candidate">is_banned_candidate</h4>
-<p>Description</p>
+<h4 class="anchored" data-anchor-id="is_banned_candidate"><strong>is_banned_candidate()</strong></h4>
+<section id="description" class="level5">
+<h5 class="anchored" data-anchor-id="description">Description:</h5>
 <p>Determines whether a candidate keyword phrase should be excluded from further consideration.</p>
-<p>A candidate is considered banned if it contains:</p>
-<p>Any substring from a predefined list of banned terms, or</p>
-<p>Any person name from a provided set</p>
+<ul>
+<li><p>A candidate is considered banned if it contains:</p></li>
+<li><p>Any substring from a predefined list of banned terms, or</p></li>
+<li><p>Any person name from a provided set</p></li>
+</ul>
 <p>All checks are performed in a case-insensitive manner. This function is typically used early in the pipeline to remove inappropriate or unwanted keyword phrases.</p>
-<p>Parameters</p>
-<p>c (str)</p>
+</section>
+<section id="parameters" class="level5">
+<h5 class="anchored" data-anchor-id="parameters">Parameters</h5>
+<section id="c-str" class="level6">
+<h6 class="anchored" data-anchor-id="c-str">c (str)</h6>
 <p>Candidate keyword phrase to evaluate.</p>
-<p>banned_substrings (list[str])</p>
+</section>
+<section id="banned_substrings-liststr" class="level6">
+<h6 class="anchored" data-anchor-id="banned_substrings-liststr">banned_substrings (list[str])</h6>
 <p>List of substrings that should not appear in valid keywords.</p>
-<p>person_names (set[str])</p>
+</section>
+<section id="person_names-setstr" class="level6">
+<h6 class="anchored" data-anchor-id="person_names-setstr">person_names (set[str])</h6>
 <p>Set of person names that should be excluded if found in a candidate.</p>
-<p>Returns</p>
+</section>
+<section id="returns" class="level6">
+<h6 class="anchored" data-anchor-id="returns">Returns</h6>
 <p>bool</p>
 <p>Returns True if the candidate should be banned, otherwise False.</p>
-<p>Examples</p>
-<div id="a5647003" class="cell" data-execution_count="1">
+</section>
+</section>
+<section id="examples" class="level5">
+<h5 class="anchored" data-anchor-id="examples">Examples</h5>
+<div id="1666ca58" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> senate_hearings.keybert_funcs <span class="im">import</span> <span class="op">*</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>is_banned_candidate(</span>
@@ -220,37 +235,56 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    person_names<span class="op">=</span><span class="bu">set</span>()</span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># False</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="1">
+<div class="cell-output cell-output-display" data-execution_count="11">
 <pre><code>False</code></pre>
 </div>
 </div>
 </section>
+</section>
 <section id="mmr_select" class="level4">
 <h4 class="anchored" data-anchor-id="mmr_select">mmr_select</h4>
-<p>Description</p>
+<section id="description-1" class="level5">
+<h5 class="anchored" data-anchor-id="description-1">Description</h5>
 <p>Selects a subset of candidate keywords using Maximal Marginal Relevance (MMR).</p>
-<p>MMR balances:</p>
-<p>Relevance of each candidate to the document, and</p>
-<p>Diversity relative to keywords that have already been selected</p>
+</section>
+<section id="mmr-balances" class="level5">
+<h5 class="anchored" data-anchor-id="mmr-balances">MMR balances:</h5>
+<p>Relevance of each candidate to the document, and diversity relative to keywords that have already been selected.</p>
 <p>This approach helps avoid redundant keywords while still prioritizing semantic relevance. Similarity calculations are based on vector dot products (cosine similarity when embeddings are normalized).</p>
-<p>Parameters</p>
-<p>doc_emb (numpy.ndarray)</p>
+</section>
+<section id="parameters-1" class="level5">
+<h5 class="anchored" data-anchor-id="parameters-1">Parameters</h5>
+<section id="doc_emb-numpy.ndarray" class="level6">
+<h6 class="anchored" data-anchor-id="doc_emb-numpy.ndarray">doc_emb (numpy.ndarray)</h6>
 <p>Embedding vector representing the document.</p>
-<p>cand_embs (numpy.ndarray)</p>
+</section>
+<section id="cand_embs-numpy.ndarray" class="level6">
+<h6 class="anchored" data-anchor-id="cand_embs-numpy.ndarray">cand_embs (numpy.ndarray)</h6>
 <p>2D array of candidate keyword embeddings with shape (n_candidates, embedding_dim).</p>
-<p>candidates (list[str])</p>
+</section>
+<section id="candidates-liststr" class="level6">
+<h6 class="anchored" data-anchor-id="candidates-liststr">candidates (list[str])</h6>
 <p>Candidate keyword phrases corresponding to the embedding rows.</p>
-<p>top_n (int, default = 10)</p>
+</section>
+<section id="top_n-int-default-10" class="level6">
+<h6 class="anchored" data-anchor-id="top_n-int-default-10">top_n (int, default = 10)</h6>
 <p>Number of keywords to select.</p>
-<p>lambda_param (float, default = 0.7)</p>
+</section>
+<section id="lambda_param-float-default-0.7" class="level6">
+<h6 class="anchored" data-anchor-id="lambda_param-float-default-0.7">lambda_param (float, default = 0.7)</h6>
 <p>Trade-off parameter between relevance and diversity:</p>
 <p>Values closer to 1 emphasize relevance</p>
 <p>Values closer to 0 emphasize diversity</p>
-<p>Returns</p>
+</section>
+<section id="returns-1" class="level6">
+<h6 class="anchored" data-anchor-id="returns-1">Returns</h6>
 <p>list[str]</p>
 <p>List of selected keyword phrases in selection order.</p>
-<p>Examples</p>
-<div id="c888aa0c" class="cell" data-execution_count="2">
+</section>
+</section>
+<section id="examples-1" class="level5">
+<h5 class="anchored" data-anchor-id="examples-1">Examples</h5>
+<div id="f49f8596" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>doc_emb <span class="op">=</span> np.array([<span class="fl">1.0</span>, <span class="fl">0.0</span>])</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>cand_embs <span class="op">=</span> np.array([</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    [<span class="fl">1.0</span>, <span class="fl">0.0</span>],</span>
@@ -262,26 +296,38 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>mmr_select(doc_emb, cand_embs, candidates, top_n<span class="op">=</span><span class="dv">2</span>)</span>
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co"># ['ai', 'machine learning']</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="2">
+<div class="cell-output cell-output-display" data-execution_count="12">
 <pre><code>['ai', 'machine learning']</code></pre>
 </div>
 </div>
 </section>
+</section>
 <section id="normalize_keyword" class="level4">
 <h4 class="anchored" data-anchor-id="normalize_keyword">normalize_keyword</h4>
-<p>Description</p>
+<section id="description-2" class="level5">
+<h5 class="anchored" data-anchor-id="description-2">Description</h5>
 <p>Normalizes a keyword to a canonical representation using a lookup dictionary.</p>
 <p>This function is useful for consolidating multiple surface forms (e.g., abbreviations or capitalization variants) into a single standardized keyword.</p>
-<p>Parameters</p>
-<p>k (str)</p>
+</section>
+<section id="parameters-2" class="level5">
+<h5 class="anchored" data-anchor-id="parameters-2">Parameters</h5>
+<section id="k-str" class="level6">
+<h6 class="anchored" data-anchor-id="k-str">k (str)</h6>
 <p>Keyword to normalize.</p>
-<p>normalize_map (dict[str, str])</p>
+</section>
+<section id="normalize_map-dictstr-str" class="level6">
+<h6 class="anchored" data-anchor-id="normalize_map-dictstr-str">normalize_map (dict[str, str])</h6>
 <p>Dictionary mapping lowercase keyword variants to their canonical forms.</p>
-<p>Returns</p>
+</section>
+<section id="returns-2" class="level6">
+<h6 class="anchored" data-anchor-id="returns-2">Returns</h6>
 <p>str</p>
 <p>Normalized keyword if a mapping exists; otherwise, the original keyword.</p>
-<p>Examples</p>
-<div id="231738c1" class="cell" data-execution_count="3">
+</section>
+</section>
+<section id="examples-2" class="level5">
+<h5 class="anchored" data-anchor-id="examples-2">Examples</h5>
+<div id="fbdf0175" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>normalize_map <span class="op">=</span> {</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ai"</span>: <span class="st">"artificial intelligence"</span>,</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ml"</span>: <span class="st">"machine learning"</span></span>
@@ -292,38 +338,58 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 'artificial intelligence'</span></span>
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>normalize_keyword(<span class="st">"statistics"</span>, normalize_map)</span>
 <span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 'statistics'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="3">
+<div class="cell-output cell-output-display" data-execution_count="13">
 <pre><code>'statistics'</code></pre>
 </div>
 </div>
 </section>
+</section>
 <section id="filter_and_normalize_keywords" class="level4">
 <h4 class="anchored" data-anchor-id="filter_and_normalize_keywords">filter_and_normalize_keywords</h4>
-<p>Description</p>
+<section id="description-3" class="level5">
+<h5 class="anchored" data-anchor-id="description-3">Description</h5>
 <p>Filters, normalizes, and formats a list of keywords into a final output structure.</p>
 <p>This function performs the following steps:</p>
-<p>Removes banned keywords using is_banned_candidate</p>
-<p>Normalizes remaining keywords using normalize_keyword</p>
-<p>Trims the list to a target size (top_n)</p>
-<p>Pads the list with empty strings if fewer than top_n remain</p>
-<p>Produces both a list representation and a semicolon-separated string</p>
-<p>Parameters</p>
-<p>kws (list[str])</p>
+<ul>
+<li><p>Removes banned keywords using is_banned_candidate</p></li>
+<li><p>Normalizes remaining keywords using normalize_keyword</p></li>
+<li><p>Trims the list to a target size (top_n)</p></li>
+<li><p>Pads the list with empty strings if fewer than top_n remain</p></li>
+<li><p>Produces both a list representation and a semicolon-separated string</p></li>
+</ul>
+</section>
+<section id="parameters-3" class="level5">
+<h5 class="anchored" data-anchor-id="parameters-3">Parameters</h5>
+<section id="kws-liststr" class="level6">
+<h6 class="anchored" data-anchor-id="kws-liststr">kws (list[str])</h6>
 <p>Raw list of keyword strings.</p>
-<p>banned_substrings (list[str])</p>
+</section>
+<section id="banned_substrings-liststr-1" class="level6">
+<h6 class="anchored" data-anchor-id="banned_substrings-liststr-1">banned_substrings (list[str])</h6>
 <p>Substrings that should be excluded.</p>
-<p>person_names (set[str])</p>
+</section>
+<section id="person_names-setstr-1" class="level6">
+<h6 class="anchored" data-anchor-id="person_names-setstr-1">person_names (set[str])</h6>
 <p>Person names to filter out.</p>
-<p>normalize_map (dict[str, str])</p>
+</section>
+<section id="normalize_map-dictstr-str-1" class="level6">
+<h6 class="anchored" data-anchor-id="normalize_map-dictstr-str-1">normalize_map (dict[str, str])</h6>
 <p>Dictionary mapping keyword variants to canonical forms.</p>
-<p>top_n (int, default = 10)</p>
+</section>
+<section id="top_n-int-default-10-1" class="level6">
+<h6 class="anchored" data-anchor-id="top_n-int-default-10-1">top_n (int, default = 10)</h6>
 <p>Target number of keywords in the output.</p>
-<p>Returns</p>
+</section>
+<section id="returns-3" class="level6">
+<h6 class="anchored" data-anchor-id="returns-3">Returns</h6>
 <p>tuple</p>
 <p>keywords_str (str): Semicolon-separated string of non-empty keywords</p>
 <p>keywords_list (list[str]): List of keywords padded with empty strings to length top_n</p>
-<p>Examples</p>
-<div id="9cf4d334" class="cell" data-execution_count="4">
+</section>
+</section>
+<section id="examples-3" class="level5">
+<h5 class="anchored" data-anchor-id="examples-3">Examples</h5>
+<div id="5049ba93" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>kws <span class="op">=</span> [<span class="st">"AI"</span>, <span class="st">"John Doe"</span>, <span class="st">"ML"</span>, <span class="st">"Data Science"</span>]</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>banned_substrings <span class="op">=</span> []</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>person_names <span class="op">=</span> {<span class="st">"john doe"</span>}</span>
@@ -342,29 +408,43 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co"># ('artificial intelligence; machine learning; Data Science',</span></span>
 <span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="co">#  ['artificial intelligence', 'machine learning', 'Data Science'])</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="4">
+<div class="cell-output cell-output-display" data-execution_count="14">
 <pre><code>('artificial intelligence; machine learning; Data Science',
  ['artificial intelligence', 'machine learning', 'Data Science'])</code></pre>
 </div>
 </div>
 </section>
+</section>
 <section id="trim_candidates_by_frequency" class="level4">
 <h4 class="anchored" data-anchor-id="trim_candidates_by_frequency">trim_candidates_by_frequency</h4>
-<p>Description</p>
+<section id="description-4" class="level5">
+<h5 class="anchored" data-anchor-id="description-4">Description</h5>
 <p>Trims a list of candidate keyword phrases based on their overall frequency in a corpus.</p>
 <p>Candidate phrases are ranked by total frequency across all documents, and only the most frequent phrases are retained. This is commonly used to reduce the candidate set before embedding or MMR selection.</p>
-<p>Parameters</p>
-<p>candidates (list[str])</p>
+</section>
+<section id="parameters-4" class="level5">
+<h5 class="anchored" data-anchor-id="parameters-4">Parameters</h5>
+<section id="candidates-liststr-1" class="level6">
+<h6 class="anchored" data-anchor-id="candidates-liststr-1">candidates (list[str])</h6>
 <p>Candidate keyword phrases.</p>
-<p>X (scipy.sparse matrix)</p>
+</section>
+<section id="x-scipy.sparse-matrix" class="level6">
+<h6 class="anchored" data-anchor-id="x-scipy.sparse-matrix">X (scipy.sparse matrix)</h6>
 <p>Document-term matrix (e.g., output of CountVectorizer). Columns correspond to candidates.</p>
-<p>max_candidates (int)</p>
+</section>
+<section id="max_candidates-int" class="level6">
+<h6 class="anchored" data-anchor-id="max_candidates-int">max_candidates (int)</h6>
 <p>Maximum number of candidates to retain.</p>
-<p>Returns</p>
+</section>
+<section id="returns-4" class="level6">
+<h6 class="anchored" data-anchor-id="returns-4">Returns</h6>
 <p>list[str]</p>
 <p>Trimmed list of candidate phrases sorted by descending frequency.</p>
-<p>Examples</p>
-<div id="4c49bf2f" class="cell" data-execution_count="5">
+</section>
+</section>
+<section id="examples-4" class="level5">
+<h5 class="anchored" data-anchor-id="examples-4">Examples</h5>
+<div id="35156403" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.sparse <span class="im">import</span> csr_matrix</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -377,16 +457,405 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>trim_candidates_by_frequency(candidates, X, max_candidates<span class="op">=</span><span class="dv">2</span>)</span>
 <span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co"># ['ai', 'ml']</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="5">
+<div class="cell-output cell-output-display" data-execution_count="15">
 <pre><code>['ai', 'statistics']</code></pre>
 </div>
 </div>
+</section>
+</section>
+<section id="safe_click" class="level4">
+<h4 class="anchored" data-anchor-id="safe_click">_safe_click</h4>
+<section id="description-5" class="level5">
+<h5 class="anchored" data-anchor-id="description-5">Description</h5>
+<p>Safely clicks a Selenium web element while handling common interaction failures.</p>
+<p>This helper function attempts to click an element by:</p>
+<ul>
+<li><p>Scrolling it into view</p></li>
+<li><p>Performing a standard click</p></li>
+<li><p>Falling back to a JavaScript-based click if necessary</p></li>
+</ul>
+<p>It gracefully handles common Selenium exceptions such as intercepted clicks or stale references and returns a success flag instead of raising errors.</p>
+</section>
+<section id="parameters-5" class="level5">
+<h5 class="anchored" data-anchor-id="parameters-5">Parameters</h5>
+<section id="driver-selenium.webdriver" class="level6">
+<h6 class="anchored" data-anchor-id="driver-selenium.webdriver">driver (selenium.webdriver)</h6>
+<p>Active Selenium WebDriver instance.</p>
+</section>
+<section id="el-selenium.webdriver.remote.webelement.webelement" class="level6">
+<h6 class="anchored" data-anchor-id="el-selenium.webdriver.remote.webelement.webelement">el (selenium.webdriver.remote.webelement.WebElement)</h6>
+<p>Element to be clicked.</p>
+</section>
+<section id="sleep_after_click-float-default-0.25" class="level6">
+<h6 class="anchored" data-anchor-id="sleep_after_click-float-default-0.25">sleep_after_click (float, default = 0.25)</h6>
+<p>Time (in seconds) to wait after clicking to allow the page to update.</p>
+</section>
+</section>
+<section id="returns-5" class="level5">
+<h5 class="anchored" data-anchor-id="returns-5">Returns</h5>
+<p>bool</p>
+<p>Returns True if the click was successful, otherwise False.</p>
+</section>
+</section>
+<section id="click_all_more_buttons" class="level4">
+<h4 class="anchored" data-anchor-id="click_all_more_buttons">click_all_more_buttons</h4>
+<section id="description-6" class="level5">
+<h5 class="anchored" data-anchor-id="description-6">Description</h5>
+<p>Clicks all visible “More” or “Show more” style controls on a page until none remain.</p>
+<p>This function is designed for pages with dynamically expanding content. It:</p>
+<ul>
+<li><p>Repeatedly searches for <a> or <button> elements containing the word “more”<p></p></button></a></p></li><a>
+<li><p>Skips elements that would navigate away from the page</p></li>
+<li><p>Clicks valid expansion controls until no more are found</p></li>
+</a></ul><a>
+<p>This is commonly used to fully expand truncated content before scraping HTML.</p>
+</a></section><a>
+<section id="parameters-6" class="level5">
+<h5 class="anchored" data-anchor-id="parameters-6">Parameters</h5>
+<section id="driver-selenium.webdriver-1" class="level6">
+<h6 class="anchored" data-anchor-id="driver-selenium.webdriver-1">driver (selenium.webdriver)</h6>
+<p>Active Selenium WebDriver instance.</p>
+</section>
+<section id="timeout-int-default-10" class="level6">
+<h6 class="anchored" data-anchor-id="timeout-int-default-10">timeout (int, default = 10)</h6>
+<p>Maximum time to wait for page updates after clicking.</p>
+</section>
+<section id="sleep_after_click-float-default-0.25-1" class="level6">
+<h6 class="anchored" data-anchor-id="sleep_after_click-float-default-0.25-1">sleep_after_click (float, default = 0.25)</h6>
+<p>Pause after each click to allow content to load.</p>
+</section>
+</section>
+<section id="returns-6" class="level5">
+<h5 class="anchored" data-anchor-id="returns-6">Returns</h5>
+<p>bool</p>
+<p>Returns True if at least one button was clicked, otherwise False.</p>
+</section>
+</a></section><a>
+<section id="expand_all_toggles" class="level4">
+<h4 class="anchored" data-anchor-id="expand_all_toggles">expand_all_toggles</h4>
+<section id="description-7" class="level5">
+<h5 class="anchored" data-anchor-id="description-7">Description</h5>
+<p>Expands common in-page toggle controls such as accordions and collapsible sections.</p>
+<p>This function targets typical Bootstrap and ARIA-based toggles and:</p>
+<ul>
+<li><p>Skips already-expanded elements</p></li>
+<li><p>Avoids real navigation links</p></li>
+<li><p>Uses safe clicking to prevent Selenium errors</p></li>
+</ul>
+<p>It is useful for revealing hidden content sections before extracting page HTML.</p>
+</section>
+<section id="parameters-7" class="level5">
+<h5 class="anchored" data-anchor-id="parameters-7">Parameters</h5>
+<section id="driver-selenium.webdriver-2" class="level6">
+<h6 class="anchored" data-anchor-id="driver-selenium.webdriver-2">driver (selenium.webdriver)</h6>
+<p>Active Selenium WebDriver instance.</p>
+</section>
+<section id="sleep_after_click-float-default-0.25-2" class="level6">
+<h6 class="anchored" data-anchor-id="sleep_after_click-float-default-0.25-2">sleep_after_click (float, default = 0.25)</h6>
+<p>Pause after each toggle expansion.</p>
+</section>
+</section>
+<section id="returns-7" class="level5">
+<h5 class="anchored" data-anchor-id="returns-7">Returns</h5>
+<p>None</p>
+</section>
+</section>
+<section id="get_fully_expanded_html" class="level4">
+<h4 class="anchored" data-anchor-id="get_fully_expanded_html">get_fully_expanded_html</h4>
+<section id="description-8" class="level5">
+<h5 class="anchored" data-anchor-id="description-8">Description</h5>
+<p>Retrieves fully expanded HTML content from a dynamic web page using Selenium.</p>
+<p>This function:</p>
+<ul>
+<li><p>Loads a page in a headless Chrome browser</p></li>
+<li><p>Expands all “more” buttons and toggles</p></li>
+<li><p>Captures the final rendered HTML</p></li>
+<li><p>Optionally saves the HTML to disk</p></li>
+</ul>
+<p>It is the primary entry point for scraping dynamically loaded govinfo pages.</p>
+</section>
+<section id="parameters-8" class="level5">
+<h5 class="anchored" data-anchor-id="parameters-8">Parameters</h5>
+<section id="url-str" class="level6">
+<h6 class="anchored" data-anchor-id="url-str">url (str)</h6>
+<p>URL of the page to load.</p>
+</section>
+<section id="headless-bool-default-true" class="level6">
+<h6 class="anchored" data-anchor-id="headless-bool-default-true">headless (bool, default = True)</h6>
+<p>Whether to run Chrome in headless mode.</p>
+</section>
+<section id="save_to-str-none" class="level6">
+<h6 class="anchored" data-anchor-id="save_to-str-none">save_to (str | None)</h6>
+<p>Optional path to save the retrieved HTML.</p>
+</section>
+<section id="wait-int-default-10" class="level6">
+<h6 class="anchored" data-anchor-id="wait-int-default-10">wait (int, default = 10)</h6>
+<p>Time to wait for the page body to load.</p>
+</section>
+</section>
+<section id="returns-8" class="level5">
+<h5 class="anchored" data-anchor-id="returns-8">Returns</h5>
+<p>str</p>
+<p>Fully expanded page HTML.</p>
+</section>
+</section>
+<section id="extract_hearing_links" class="level4">
+<h4 class="anchored" data-anchor-id="extract_hearing_links">extract_hearing_links</h4>
+<section id="description-9" class="level5">
+<h5 class="anchored" data-anchor-id="description-9">Description</h5>
+<p>Extracts hearing detail and transcript links from a govinfo HTML page.</p>
+<p>The function searches for hearing identifiers (CHRG-*) and returns normalized URLs for:</p>
+<ul>
+<li><p>Hearing detail pages</p></li>
+<li><p>Hearing transcript text pages</p></li>
+</ul>
+<p>Duplicate hearings are automatically removed.</p>
+</section>
+<section id="parameters-9" class="level5">
+<h5 class="anchored" data-anchor-id="parameters-9">Parameters</h5>
+<section id="html_text-str" class="level6">
+<h6 class="anchored" data-anchor-id="html_text-str">html_text (str)</h6>
+<p>HTML content from a govinfo page.</p>
+</section>
+</section>
+<section id="returns-9" class="level5">
+<h5 class="anchored" data-anchor-id="returns-9">Returns</h5>
+<p>pandas.DataFrame</p>
+<p>DataFrame with columns:</p>
+<ul>
+<li><p>details_url</p></li>
+<li><p>text_url</p></li>
+</ul>
+</section>
+</section>
+<section id="get_session_from_url" class="level4">
+<h4 class="anchored" data-anchor-id="get_session_from_url">get_session_from_url</h4>
+<section id="description-10" class="level5">
+<h5 class="anchored" data-anchor-id="description-10">Description</h5>
+<p>Extracts the congressional session number from a hearing URL.</p>
+<p>For example, URLs containing CHRG-119… will return “119”.</p>
+</section>
+<section id="parameters-10" class="level5">
+<h5 class="anchored" data-anchor-id="parameters-10">Parameters</h5>
+<section id="url-str-1" class="level6">
+<h6 class="anchored" data-anchor-id="url-str-1">url (str)</h6>
+<p>Hearing URL containing a CHRG identifier.</p>
+</section>
+</section>
+<section id="returns-10" class="level5">
+<h5 class="anchored" data-anchor-id="returns-10">Returns</h5>
+<p>str | None</p>
+<p>Session number if found, otherwise None.</p>
+</section>
+</section>
+<section id="get_text" class="level4">
+<h4 class="anchored" data-anchor-id="get_text">get_text</h4>
+<section id="description-11" class="level5">
+<h5 class="anchored" data-anchor-id="description-11">Description</h5>
+<p>Downloads and extracts transcript text from a govinfo text endpoint.</p>
+<p>This function:</p>
+<ul>
+<li><p>Fetches transcript pages using HTTP requests</p></li>
+<li><p>Parses</p>
+<pre><p>blocks containing raw hearing text</p></pre></li>
+</ul>
+<p>Retries failed requests using exponential backoff</p>
+</section>
+<section id="parameters-11" class="level5">
+<h5 class="anchored" data-anchor-id="parameters-11">Parameters</h5>
+<section id="url-str-2" class="level6">
+<h6 class="anchored" data-anchor-id="url-str-2">url (str)</h6>
+<p>Govinfo transcript text URL.</p>
+</section>
+<section id="retries-int-default-5" class="level6">
+<h6 class="anchored" data-anchor-id="retries-int-default-5">retries (int, default = 5)</h6>
+<p>Number of retry attempts for failed requests.</p>
+</section>
+</section>
+<section id="returns-11" class="level5">
+<h5 class="anchored" data-anchor-id="returns-11">Returns</h5>
+<p>str | None</p>
+<p>Transcript text if successful, otherwise None.</p>
+</section>
+</section>
+<section id="to_html_url" class="level4">
+<h4 class="anchored" data-anchor-id="to_html_url">to_html_url</h4>
+<section id="description-12" class="level5">
+<h5 class="anchored" data-anchor-id="description-12">Description</h5>
+<p>Converts a govinfo “app/text” URL into a direct HTML transcript URL.</p>
+<p>This is useful when switching from application views to static content pages.</p>
+</section>
+<section id="parameters-12" class="level5">
+<h5 class="anchored" data-anchor-id="parameters-12">Parameters</h5>
+<section id="app_text_url-str" class="level6">
+<h6 class="anchored" data-anchor-id="app_text_url-str">app_text_url (str)</h6>
+<p>Govinfo /app/text/… URL.</p>
+</section>
+</section>
+<section id="returns-12" class="level5">
+<h5 class="anchored" data-anchor-id="returns-12">Returns</h5>
+<p>str</p>
+<p>Corresponding /content/pkg/…/html/… URL.</p>
+</section>
+</section>
+<section id="get_category_text" class="level4">
+<h4 class="anchored" data-anchor-id="get_category_text">get_category_text</h4>
+<section id="description-13" class="level5">
+<h5 class="anchored" data-anchor-id="description-13">Description</h5>
+<p>Extracts the hearing category label from a govinfo details page.</p>
+<p>The category is located within a specific tooltip-enabled HTML element.</p>
+</section>
+<section id="parameters-13" class="level5">
+<h5 class="anchored" data-anchor-id="parameters-13">Parameters</h5>
+<section id="url-str-3" class="level6">
+<h6 class="anchored" data-anchor-id="url-str-3">url (str)</h6>
+<p>Govinfo hearing details page URL.</p>
+</section>
+</section>
+<section id="returns-13" class="level5">
+<h5 class="anchored" data-anchor-id="returns-13">Returns</h5>
+<p>str | None</p>
+<p>Category text if found, otherwise None.</p>
+</section>
+</section>
+<section id="extract_main_text" class="level4">
+<h4 class="anchored" data-anchor-id="extract_main_text">extract_main_text</h4>
+<section id="description-14" class="level5">
+<h5 class="anchored" data-anchor-id="description-14">Description</h5>
+<p>Cleans and normalizes raw congressional hearing transcript text.</p>
+<p>The function removes:</p>
+<ul>
+<li><p>Bracketed metadata</p></li>
+<li><p>Page numbers and formatting artifacts</p></li>
+<li><p>Speaker labels and headings</p></li>
+<li><p>Excessive whitespace and separators</p></li>
+</ul>
+<p>Optionally, it can remove ALL CAPS headings for cleaner narrative text.</p>
+</section>
+<section id="parameters-14" class="level5">
+<h5 class="anchored" data-anchor-id="parameters-14">Parameters</h5>
+<p>raw (str)</p>
+<p>Raw transcript text.</p>
+<section id="remove_all_caps_headings-bool-default-false" class="level6">
+<h6 class="anchored" data-anchor-id="remove_all_caps_headings-bool-default-false">remove_all_caps_headings (bool, default = False)</h6>
+<p>Whether to remove ALL CAPS headings.</p>
+</section>
+</section>
+<section id="returns-14" class="level5">
+<h5 class="anchored" data-anchor-id="returns-14">Returns</h5>
+<p>str</p>
+<p>Cleaned, readable transcript text.</p>
+</section>
+</section>
+<section id="get_date" class="level4">
+<h4 class="anchored" data-anchor-id="get_date">get_date</h4>
+<section id="description-15" class="level5">
+<h5 class="anchored" data-anchor-id="description-15">Description</h5>
+<p>Extracts the first full date string from transcript text.</p>
+<p>Dates are expected in the format: Month Day, Year</p>
+</section>
+<section id="parameters-15" class="level5">
+<h5 class="anchored" data-anchor-id="parameters-15">Parameters</h5>
+<p>text (str)</p>
+<p>Transcript text.</p>
+</section>
+<section id="returns-15" class="level5">
+<h5 class="anchored" data-anchor-id="returns-15">Returns</h5>
+<p>str</p>
+<p>Extracted date string, or “na” if none found.</p>
+</section>
+</section>
+<section id="extract_hearing_title" class="level4">
+<h4 class="anchored" data-anchor-id="extract_hearing_title">extract_hearing_title</h4>
+<section id="description-16" class="level5">
+<h5 class="anchored" data-anchor-id="description-16">Description</h5>
+<p>Extracts the hearing title from transcript text.</p>
+<p>The title is identified as one or more consecutive ALL-CAPS lines near the beginning of the document.</p>
+</section>
+<section id="parameters-16" class="level5">
+<h5 class="anchored" data-anchor-id="parameters-16">Parameters</h5>
+<p>raw_text (str)</p>
+<p>Raw transcript text.</p>
+</section>
+<section id="returns-16" class="level5">
+<h5 class="anchored" data-anchor-id="returns-16">Returns</h5>
+<p>str | None</p>
+<p>Hearing title if found.</p>
+</section>
+</section>
+<section id="get_month" class="level4">
+<h4 class="anchored" data-anchor-id="get_month">get_month</h4>
+<section id="description-17" class="level5">
+<h5 class="anchored" data-anchor-id="description-17">Description</h5>
+<p>Extracts the numeric month from a date string.</p>
+</section>
+<section id="parameters-17" class="level5">
+<h5 class="anchored" data-anchor-id="parameters-17">Parameters</h5>
+<p>date (str)</p>
+<p>Date string containing a month name.</p>
+</section>
+<section id="returns-17" class="level5">
+<h5 class="anchored" data-anchor-id="returns-17">Returns</h5>
+<p>int | None</p>
+<p>Month number (1–12) or None.</p>
+</section>
+</section>
+<section id="get_day" class="level4">
+<h4 class="anchored" data-anchor-id="get_day">get_day</h4>
+<section id="description-18" class="level5">
+<h5 class="anchored" data-anchor-id="description-18">Description</h5>
+<p>Extracts the day of the month from a date string.</p>
+</section>
+<section id="parameters-18" class="level5">
+<h5 class="anchored" data-anchor-id="parameters-18">Parameters</h5>
+<p>date (str)</p>
+<p>Date string.</p>
+</section>
+<section id="returns-18" class="level5">
+<h5 class="anchored" data-anchor-id="returns-18">Returns</h5>
+<p>int | str</p>
+<p>Day of month or “na”.</p>
+</section>
+</section>
+<section id="get_year" class="level4">
+<h4 class="anchored" data-anchor-id="get_year">get_year</h4>
+<section id="description-19" class="level5">
+<h5 class="anchored" data-anchor-id="description-19">Description</h5>
+<p>Extracts the year from a date string.</p>
+</section>
+<section id="parameters-19" class="level5">
+<h5 class="anchored" data-anchor-id="parameters-19">Parameters</h5>
+<p>date (str)</p>
+<p>Date string.</p>
+</section>
+<section id="returns-19" class="level5">
+<h5 class="anchored" data-anchor-id="returns-19">Returns</h5>
+<p>int | str</p>
+<p>Year or “na”.</p>
+</section>
+</section>
+<section id="load_processed" class="level4">
+<h4 class="anchored" data-anchor-id="load_processed">load_processed</h4>
+<section id="description-20" class="level5">
+<h5 class="anchored" data-anchor-id="description-20">Description</h5>
+<p>Loads a previously processed CSV file into a pandas DataFrame.</p>
+</section>
+<section id="parameters-20" class="level5">
+<h5 class="anchored" data-anchor-id="parameters-20">Parameters</h5>
+<p>path (str)</p>
+<p>Path to the CSV file.</p>
+</section>
+<section id="returns-20" class="level5">
+<h5 class="anchored" data-anchor-id="returns-20">Returns</h5>
+<p>pandas.DataFrame</p>
+<p>Loaded dataset.</p>
 
 
 </section>
 </section>
+</a></section><a>
 
-</main> <!-- /main -->
+</a></main><a> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
@@ -787,9 +1256,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
   });
   </script>
-</div> <!-- /content -->
+</a></div><a> <!-- /content -->
 
 
 
 
-</body></html>
+</a></body></html>

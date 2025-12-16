@@ -2,9 +2,9 @@
 
 ## Functions
 
-#### is_banned_candidate
+#### **is_banned_candidate()**
 
-##### Description
+##### Description:
 
 Determines whether a candidate keyword phrase should be excluded from further consideration.
 
@@ -16,7 +16,7 @@ Determines whether a candidate keyword phrase should be excluded from further co
 
 All checks are performed in a case-insensitive manner. This function is typically used early in the pipeline to remove inappropriate or unwanted keyword phrases.
 
-##### Parameters
+##### Parameters:
 
 ###### c (str)
 
@@ -439,13 +439,6 @@ DataFrame with columns:
 
 - text_url
 
-##### Examples
-
-```{python, eval: false}
-html = open("hearings.html").read()
-df = extract_hearing_links(html)
-df.head()
-```
 
 #### get_session_from_url
 
