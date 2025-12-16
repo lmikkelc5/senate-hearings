@@ -1,5 +1,8 @@
 ---
 title: "Tutorial: Extracting Senate Hearing Data and Preparing for Analysis"
+author: 
+  - Mikkel Christensen
+  - Corbin Brinkerhoff
 format: 
   html:
     code-fold: false
