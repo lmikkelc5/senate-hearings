@@ -1,0 +1,631 @@
+---
+title: "Tutorial: Extracting Senate Hearing Data and Preparing for Analysis"
+format: 
+  html:
+    code-fold: false
+    code-tools: true
+---
+
+## Introduction
+
+This tutorial walks through the complete process of extracting, cleaning, and preparing Senate hearing data from govinfo.gov. We'll cover everything from scraping committee pages to extracting structured information from hearing transcripts.
+
+## Overview of the Process
+
+Our data extraction pipeline consists of four main stages:
+
+1. **Scraping committee pages** to find all hearings
+2. **Extracting hearing links** from the HTML
+3. **Downloading hearing transcripts** and organizing by session
+4. **Cleaning and extracting structured data** from the raw text
+
+## Prerequisites
+
+Before starting, make sure you have the required packages installed:
+
+```python
+pip install selenium beautifulsoup4 pandas requests
+```
+
+You'll also need ChromeDriver for Selenium. The helper functions in this package handle the web scraping automatically.
+
+## Stage 1: Scraping Committee Pages
+
+The first step is to get a list of all Senate committees and their URLs from the main govinfo.gov committee page.
+
+```python
+from senate_hearings import helper_funcs
+from bs4 import BeautifulSoup
+import requests
+
+# Get the main committee page
+url = 'https://www.govinfo.gov/browse/committee'
+r = requests.get(url)
+soup = BeautifulSoup(r.content, "html.parser")
+
+# Find all Senate committee links
+base_url = 'https://www.govinfo.gov'
+divs = soup.find_all('div', id='senate-col')
+links = divs[0].find_all('a')
+
+# Create dictionary of committee names and URLs
+page_links = {'committee_name': [], 'url': []}
+for link in links:
+    committee = link.text
+    page_links['committee_name'].append(committee)
+    partial_url = link['href']
+    page_links['url'].append(base_url + partial_url)
+```
+
+### Downloading Fully Expanded HTML
+
+Each committee page has hearing links that are initially hidden behind "Show more" buttons. We use Selenium to click all these buttons and get the fully expanded page:
+
+```python
+# Loop through each committee page
+for i, link in enumerate(page_links['url']):
+    committee = page_links['committee_name'][i]
+    
+    # Get fully expanded HTML with all hearings visible
+    html = helper_funcs.get_fully_expanded_html(
+        link, 
+        headless=True, 
+        save_to=f"data/senate_html/{committee.lower()}.html"
+    )
+    print(f"Saved committee {i+1}: {committee}")
+```
+
+The `get_fully_expanded_html()` function:
+- Opens the page in Chrome (headless mode)
+- Clicks all "Show more" buttons using XPath
+- Expands accordion/collapse elements
+- Returns the full page source
+- Saves to a file if specified
+
+## Stage 2: Extracting Hearing Links
+
+Now that we have the fully expanded HTML for each committee, we can extract all the individual hearing links.
+
+```python
+import glob
+import pandas as pd
+
+all_dfs = []
+list_of_html_files = glob.glob("data/senate_html/*.html")
+
+for file in list_of_html_files:
+    with open(file, "r", encoding="utf-8") as f:
+        html_text = f.read()
+    
+    # Extract hearing links from this committee's page
+    df = helper_funcs.extract_hearing_links(html_text)
+    all_dfs.append(df)
+
+# Combine all committees into one DataFrame
+final_df = pd.concat(all_dfs, ignore_index=True)
+```
+
+The `extract_hearing_links()` function creates a DataFrame with:
+- `details_url`: Link to the hearing details page
+- `text_url`: Link to the hearing transcript text
+
+## Stage 3: Downloading Hearing Transcripts
+
+With all the hearing links collected, we can now download the actual transcript text for each hearing.
+
+```python
+# Add session number (e.g., 119, 118, 117...)
+final_df["session"] = final_df["details_url"].apply(
+    helper_funcs.get_session_from_url
+)
+
+# Convert to proper HTML URLs
+final_df["details_url"] = final_df["details_url"].apply(
+    helper_funcs.to_html_url
+)
+final_df["text_url"] = final_df["text_url"].apply(
+    helper_funcs.to_html_url
+)
+
+# Download all transcript texts (this will take a while!)
+final_df['text'] = final_df['text_url'].apply(helper_funcs.get_text)
+```
+
+The `get_text()` function:
+- Fetches the HTML page for each transcript
+- Extracts text from the `<pre>` tag
+- Includes retry logic with exponential backoff
+- Handles connection errors gracefully
+
+### Splitting by Session
+
+To make the data more manageable, we split it into separate CSV files by Congressional session:
+
+```python
+sessions = [119, 118, 117, 116, 115, 114, 113, 112, 111, 110, 
+            109, 108, 107, 106, 105, 104]
+
+for session_num in sessions:
+    session_df = final_df[final_df["session"] == session_num]
+    session_df.to_csv(
+        f"data/uncleaned_data/session_{session_num}.csv", 
+        index=False
+    )
+    print(f'Saved session {session_num}')
+```
+
+## Stage 4: Cleaning and Extracting Structured Data
+
+The raw transcript text contains a lot of formatting, metadata, and structural elements that we need to clean up.
+
+```python
+import pandas as pd
+from senate_hearings import helper_funcs
+
+# Process sessions (here we show 118 and 119)
+sessions = [119, 118]
+
+for session_num in sessions:
+    # Load the raw data
+    df = pd.read_csv(f"data/uncleaned_data/session_{session_num}.csv")
+    
+    # Clean the transcript text
+    df['text'] = df['text'].apply(helper_funcs.extract_main_text)
+    
+    # Extract date information
+    df['date'] = df['text'].apply(helper_funcs.get_date)
+    df['month'] = df['date'].apply(helper_funcs.get_month)
+    df['day'] = df['date'].apply(helper_funcs.get_day)
+    df['year'] = df['date'].apply(helper_funcs.get_year)
+    
+    # Extract hearing title
+    df['title'] = df['text'].apply(helper_funcs.extract_hearing_title)
+    
+    # Reorder columns (text at the end)
+    df = df[[c for c in df.columns if c != "text"] + ["text"]]
+    
+    # Remove unnecessary URL columns
+    df = df.drop(['details_url', 'text_url'], axis=1)
+    
+    # Save cleaned data
+    df.to_csv(
+        f"data/cleaned/session_{session_num}_cleaned.csv", 
+        index=False
+    )
+    print(f"Saved cleaned session {session_num}")
+```
+
+### What the Cleaning Functions Do
+
+**`extract_main_text()`**:
+- Removes bracketed metadata like `[Senate Hearing 119-123]`
+- Strips formatting lines (`====`, `----`, `____`)
+- Removes page numbers
+- Cleans speaker labels (`CHAIRMAN SMITH:`)
+- Removes statement headers
+- Collapses excessive whitespace
+
+**`get_date()`**:
+- Searches for date patterns like "January 15, 2024"
+- Returns the first date found (typically the hearing date)
+- Returns "na" if no date found
+
+**`extract_hearing_title()`**:
+- Finds consecutive ALL-CAPS lines at the start
+- These typically contain the hearing title
+- Joins multi-line titles into a single string
+
+**Date parsing functions** (`get_month()`, `get_day()`, `get_year()`):
+- Extract individual date components
+- Convert month names to numbers (January → 1)
+- Handle missing dates gracefully
+
+## Final Data Structure
+
+After cleaning, each session CSV contains:
+
+- `session`: Congressional session number (e.g., 119, 118)
+- `date`: Full date string (e.g., "January 15, 2024")
+- `month`: Month number (1-12)
+- `day`: Day of month (1-31)
+- `year`: Four-digit year
+- `title`: Hearing title/topic
+- `text`: Cleaned transcript text
+
+## Complete Pipeline Script
+
+For reference, here's how all the stages connect in the main [get_data.py](../src/get_data.py) script:
+
+```python
+from senate_hearings import helper_funcs
+from bs4 import BeautifulSoup
+import pandas as pd
+import requests
+import glob
+
+# Stage 1: Get committee pages
+url = 'https://www.govinfo.gov/browse/committee'
+r = requests.get(url)
+soup = BeautifulSoup(r.content, "html.parser")
+# ... (collect committee URLs)
+
+# Stage 2: Download expanded HTML for each committee
+for link in page_links['url']:
+    html = helper_funcs.get_fully_expanded_html(
+        link, 
+        headless=True, 
+        save_to=f"data/senate_html/{committee.lower()}.html"
+    )
+
+# Stage 3: Extract hearing links
+all_dfs = []
+for file in glob.glob("data/senate_html/*.html"):
+    with open(file, "r", encoding="utf-8") as f:
+        df = helper_funcs.extract_hearing_links(f.read())
+        all_dfs.append(df)
+final_df = pd.concat(all_dfs, ignore_index=True)
+
+# Stage 4: Download transcripts
+final_df["session"] = final_df["details_url"].apply(
+    helper_funcs.get_session_from_url
+)
+final_df['text'] = final_df['text_url'].apply(helper_funcs.get_text)
+
+# Stage 5: Split by session
+for session_num in [119, 118, ...]:
+    session_df = final_df[final_df["session"] == session_num]
+    session_df.to_csv(f"data/uncleaned_data/session_{session_num}.csv")
+
+# Stage 6: Clean and extract structured data
+for session_num in [119, 118]:
+    df = pd.read_csv(f"data/uncleaned_data/session_{session_num}.csv")
+    df['text'] = df['text'].apply(helper_funcs.extract_main_text)
+    df['date'] = df['text'].apply(helper_funcs.get_date)
+    # ... (extract other fields)
+    df.to_csv(f"data/cleaned/session_{session_num}_cleaned.csv")
+```
+
+## Tips and Considerations
+
+### Handling Rate Limits
+- The `get_text()` function includes retry logic with exponential backoff
+- Consider adding delays between requests if you hit rate limits
+- Save progress frequently so you don't lose work
+
+### Memory Management
+- Processing all sessions at once can use a lot of memory
+- Split by session to keep DataFrames manageable
+- Save intermediate results after each stage
+
+### Error Handling
+- Some hearings might not have text available
+- Date extraction might fail for non-standard formats
+- Always check for null values after extraction
+
+### Extending the Pipeline
+You can easily add more extraction functions to pull out:
+- Committee names from titles
+- Witness names and titles
+- Topics using keyword extraction (see our KeyBERT implementation)
+- Voting records or outcomes
+
+## Stage 5: Keyword Extraction with KeyBERT
+
+After cleaning the transcripts, we extract the most important keywords from each hearing using KeyBERT with Maximal Marginal Relevance (MMR) for diversity.
+
+### Why Keyword Extraction?
+
+Senate hearing transcripts are long documents (often 50+ pages). Extracting keywords helps us:
+- Quickly identify the main topics discussed in each hearing
+- Compare topics across different sessions and committees
+- Track how issues evolve over time
+- Enable better search and filtering in dashboards
+
+### The KeyBERT Approach
+
+We use sentence transformers to create embeddings of both the documents and candidate phrases, then select keywords that are:
+1. **Relevant** to the document content (high similarity)
+2. **Diverse** from each other (not redundant)
+3. **Meaningful** (filtered to remove boilerplate and generic terms)
+
+### Setting Up Keyword Extraction
+
+First, install the required packages:
+
+```python
+pip install sentence-transformers scikit-learn
+```
+
+Then import the necessary modules:
+
+```python
+import pandas as pd
+from sentence_transformers import SentenceTransformer
+from sklearn.feature_extraction.text import CountVectorizer
+from senate_hearings.keybert_funcs import (
+    is_banned_candidate, 
+    mmr_select, 
+    filter_and_normalize_keywords,
+    trim_candidates_by_frequency
+)
+```
+
+### Configuration Parameters
+
+```python
+# Sessions to process
+sessions = [119, 118]
+
+# Embedding model for semantic similarity
+model_name = 'all-MiniLM-L6-v2'
+
+# Candidate phrase settings
+ngram_range = (1, 2)      # Extract 1-2 word phrases
+max_candidates = 5000     # Limit candidates for efficiency
+top_n = 10                # Extract 10 keywords per hearing
+
+# MMR diversity parameter (0 = max diversity, 1 = max relevance)
+mmr_lambda = 0.7
+```
+
+### Filtering Boilerplate Terms
+
+Congressional hearings contain lots of procedural language that we want to exclude:
+
+```python
+banned_substrings = [
+    # Committee/institutional boilerplate
+    'senate committee', 'committee hearing', 'committee members',
+    'subcommittee', 'members congress', 'committee',
+    
+    # Roles and greetings
+    'opening statement', 'testimony', 'chairman', 'senator',
+    'thank you', 'good morning', 'witness',
+    
+    # Structural noise
+    'congress session', 'senate office', 'prepared statement',
+    'government publishing',
+    
+    # Generic terms
+    'federal', 'bipartisan', 'administrations'
+]
+```
+
+### Normalizing Keyword Variants
+
+We also normalize common variants to canonical forms for better aggregation:
+
+```python
+normalize_map = {
+    # Budget terminology
+    'president budget': "president's budget",
+    "president's budget": "president's budget",
+    
+    # Agency acronyms
+    'epa': 'EPA',
+    'fcc': 'FCC',
+    'veterans affairs': 'Veterans Affairs',
+    'va': 'Veterans Affairs',
+    'department of energy': 'DOE',
+    'cdc': 'CDC',
+    'fda': 'FDA',
+    
+    # Common phrases
+    'natural gas': 'Natural Gas',
+    'health plans': 'Health Plans',
+    'federal funding': 'Federal Funding'
+}
+```
+
+### The Extraction Process
+
+```python
+# Load the embedding model once (reuse for efficiency)
+print('Loading embedding model:', model_name)
+model = SentenceTransformer(model_name)
+
+rows = []  # Collect results for all sessions
+
+for session in sessions:
+    print(f'\nProcessing session: {session}')
+    
+    # Load cleaned data
+    df = pd.read_csv(f"data/cleaned/session_{session}_cleaned.csv")
+    docs = df['text'].fillna('').astype(str).tolist()
+    
+    # Step 1: Generate candidate phrases using CountVectorizer
+    vectorizer = CountVectorizer(
+        ngram_range=ngram_range, 
+        stop_words='english'
+    )
+    X = vectorizer.fit_transform(docs)
+    candidates = vectorizer.get_feature_names_out().tolist()
+    print(f'Total candidate phrases: {len(candidates)}')
+    
+    # Step 2: Trim candidates by frequency if needed
+    if len(candidates) > max_candidates:
+        candidates = trim_candidates_by_frequency(
+            candidates, X, max_candidates
+        )
+        print(f'Trimmed to: {len(candidates)}')
+    
+    # Step 3: Filter out banned candidates
+    candidates = [
+        c for c in candidates 
+        if not is_banned_candidate(c, banned_substrings, set())
+    ]
+    print(f'After filtering: {len(candidates)}')
+    
+    # Step 4: Encode documents and candidates
+    print('Encoding documents...')
+    doc_embs = model.encode(
+        docs, 
+        batch_size=32, 
+        show_progress_bar=True,
+        normalize_embeddings=True
+    )
+    
+    print('Encoding candidates...')
+    cand_embs = model.encode(
+        candidates,
+        batch_size=128,
+        show_progress_bar=True,
+        normalize_embeddings=True
+    )
+    
+    # Step 5: Select keywords using MMR for each document
+    print('Selecting keywords with MMR...')
+    for idx, doc_emb in enumerate(doc_embs):
+        # MMR selection for diverse, relevant keywords
+        kws = mmr_select(
+            doc_emb, 
+            cand_embs, 
+            candidates,
+            top_n=top_n,
+            lambda_param=mmr_lambda
+        )
+        
+        # Final filtering and normalization
+        keywords_str, kws_list = filter_and_normalize_keywords(
+            kws,
+            banned_substrings,
+            set(),  # person_names (optional)
+            normalize_map,
+            top_n
+        )
+        
+        # Build row with metadata and keywords
+        row = {
+            'session': df.at[idx, 'session'],
+            'date': df.at[idx, 'date'],
+            'month': df.at[idx, 'month'],
+            'day': df.at[idx, 'day'],
+            'year': df.at[idx, 'year'],
+            'title': df.at[idx, 'title'],
+            'keywords': keywords_str  # semicolon-separated
+        }
+        
+        # Add individual keyword columns (kw_1, kw_2, ..., kw_10)
+        for j in range(top_n):
+            row[f'kw_{j+1}'] = kws_list[j] if j < len(kws_list) else ''
+        
+        rows.append(row)
+
+# Step 6: Save aggregated results
+out_df = pd.DataFrame(rows)
+cols = ['session', 'date', 'month', 'day', 'year', 'title', 'keywords'] + \
+       [f'kw_{j+1}' for j in range(top_n)]
+out_df = out_df[cols]
+out_df.to_csv('data/cleaned/all_sessions_keywords_filtered.csv', index=False)
+print('Saved keywords to all_sessions_keywords_filtered.csv')
+```
+
+### Understanding the MMR Algorithm
+
+**Maximal Marginal Relevance (MMR)** balances relevance and diversity:
+
+```python
+def mmr_select(doc_emb, cand_embs, candidates, top_n=10, lambda_param=0.7):
+    """
+    Select keywords that are both relevant and diverse.
+    """
+    # Compute relevance: similarity to document
+    doc_sim = np.dot(cand_embs, doc_emb)
+    
+    selected_idx = []
+    # Start with most relevant keyword
+    idx = int(np.argmax(doc_sim))
+    selected_idx.append(idx)
+    
+    # Iteratively add keywords
+    while len(selected_idx) < min(top_n, len(candidates)):
+        mmr_scores = []
+        
+        for i in range(len(candidates)):
+            if i in selected_idx:
+                continue
+                
+            relevance = doc_sim[i]
+            
+            # Diversity: how different from already selected keywords
+            diversity_score = max([
+                np.dot(cand_embs[i], cand_embs[j]) 
+                for j in selected_idx
+            ])
+            
+            # MMR score: balance relevance and diversity
+            score = lambda_param * relevance - (1 - lambda_param) * diversity_score
+            mmr_scores.append((score, i))
+        
+        # Add keyword with highest MMR score
+        next_idx = max(mmr_scores)[1]
+        selected_idx.append(next_idx)
+    
+    return [candidates[i] for i in selected_idx]
+```
+
+**Key parameters:**
+- `lambda_param = 0.7`: 70% relevance, 30% diversity
+  - Higher values (→1.0): More relevant but potentially redundant keywords
+  - Lower values (→0.0): More diverse but potentially less relevant keywords
+
+### Final Output Structure
+
+The `all_sessions_keywords_filtered.csv` contains:
+
+- `session`, `date`, `month`, `day`, `year`, `title`: Metadata from cleaning stage
+- `keywords`: All keywords as a semicolon-separated string
+- `kw_1` through `kw_10`: Individual keyword columns for easy filtering/analysis
+
+Example row:
+```
+session: 119
+date: January 15, 2024
+title: ARTIFICIAL INTELLIGENCE AND NATIONAL SECURITY
+keywords: AI systems; machine learning; defense applications; cybersecurity; military technology
+kw_1: AI systems
+kw_2: machine learning
+kw_3: defense applications
+...
+```
+
+### Benefits of This Approach
+
+1. **Semantic understanding**: Uses embeddings instead of simple word frequency
+2. **Diversity**: MMR prevents redundant keywords (e.g., won't extract both "climate change" and "climate crisis")
+3. **Cleaner results**: Filters procedural language and normalizes variants
+4. **Scalable**: Processes thousands of documents efficiently
+5. **Consistent**: Same keywords appear when topics recur across hearings
+
+### Tips for Keyword Extraction
+
+**Adjusting relevance vs. diversity:**
+- More diverse keywords: Lower `mmr_lambda` (try 0.5)
+- More relevant keywords: Higher `mmr_lambda` (try 0.9)
+
+**Handling domain-specific terms:**
+- Add agency names, technical terms to your normalize map
+- Update banned substrings based on your corpus
+
+**Performance optimization:**
+- Use smaller embedding models for faster processing
+- Trim candidates more aggressively (lower `max_candidates`)
+- Process sessions in batches if memory is limited
+
+**Quality checking:**
+- Manually review keywords from a sample of hearings
+- Adjust filters based on unwanted terms that slip through
+- Check for important terms being incorrectly filtered
+
+## Next Steps
+
+With your cleaned data and extracted keywords, you can now:
+
+1. **Perform exploratory data analysis** to understand patterns
+2. **Analyze trends** across sessions, committees, or time periods
+3. **Build visualizations** to communicate insights
+4. **Create an interactive dashboard** (like our Streamlit app!)
+5. **Apply topic modeling** or clustering to group similar hearings
+6. **Track keyword evolution** over time to see emerging issues
+
+For more details on the analysis phase, check out our [Technical Report](technical_report.qmd).
