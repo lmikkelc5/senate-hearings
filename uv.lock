@@ -2058,7 +2058,7 @@ wheels = [
 
 [[package]]
 name = "senate-hearings"
-version = "0.1.0"
+version = "0.1.1"
 source = { editable = "." }
 dependencies = [
     { name = "beautifulsoup4" },
@@ -2068,6 +2068,7 @@ dependencies = [
     { name = "pyyaml" },
     { name = "requests" },
     { name = "scipy" },
+    { name = "seaborn" },
     { name = "selenium" },
 ]
 
@@ -2087,9 +2088,6 @@ nlp = [
     { name = "sentence-transformers" },
     { name = "spacy" },
 ]
-viz = [
-    { name = "seaborn" },
-]
 
 [package.metadata]
 requires-dist = [
@@ -2105,14 +2103,14 @@ requires-dist = [
     { name = "pyyaml", specifier = ">=6.0.3" },
     { name = "requests", specifier = ">=2.32.5" },
     { name = "scipy", specifier = ">=1.16.3" },
-    { name = "seaborn", marker = "extra == 'viz'", specifier = ">=0.13.2" },
+    { name = "seaborn", specifier = ">=0.13.2" },
     { name = "selenium", specifier = ">=4.38.0" },
     { name = "sentence-transformers", marker = "extra == 'nlp'", specifier = ">=5.2.0" },
     { name = "spacy", marker = "extra == 'nlp'", specifier = ">=3.8.11" },
     { name = "streamlit", marker = "extra == 'app'", specifier = ">=1.52.1" },
     { name = "twine", marker = "extra == 'dev'" },
 ]
-provides-extras = ["dev", "viz", "app", "nlp"]
+provides-extras = ["dev", "app", "nlp"]
 
 [[package]]
 name = "sentence-transformers"
