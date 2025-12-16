@@ -57,6 +57,7 @@ Understanding which topics appear together in hearings reveals thematic clusters
 **Co-occurrence heatmaps**: We built a matrix showing how often keyword pairs appear in the same hearing. This raw co-occurrence data highlights which topics are naturally linked—for example, "health care" frequently appears alongside "Medicare" and "Medicaid."
 
 **Correlation analysis (Pearson)**: We computed Pearson correlation coefficients on binary keyword presence (1 if keyword appears in a hearing, 0 otherwise) across the top 10 keywords. This measures linear relationships between keyword occurrences:
+
 - **Positive correlation**: Keywords that tend to appear together
 - **Near zero**: Keywords that appear independently  
 - **Negative correlation**: Keywords that rarely appear in the same hearings (distinct topic clusters)
@@ -64,6 +65,7 @@ Understanding which topics appear together in hearings reveals thematic clusters
 However, Pearson correlation can be inflated by highly frequent keywords, so we also computed:
 
 **Normalized Pointwise Mutual Information (NPMI)**: NPMI measures how much more (or less) two keywords co-occur compared to what we'd expect by chance, normalized to a [-1, 1] scale:
+
 - **NPMI near 1**: Strong topical association beyond just frequency
 - **NPMI near 0**: Co-occurrence at chance levels
 - **Negative NPMI**: Keywords that avoid each other (distinct topics)
@@ -75,12 +77,14 @@ NPMI is more robust than Pearson for identifying truly meaningful topic relation
 ### Visualization Approach
 
 All analysis and visualizations were developed in the [EDA.ipynb](../notebooks/EDA.ipynb) notebook using:
+
 - **Pandas** for data manipulation and aggregation
 - **Matplotlib** for basic plotting (bar charts, histograms)
 - **Seaborn** for heatmaps with color scales and annotations
 - **Lower-triangle heatmaps** to reduce redundancy (since correlation matrices are symmetric)
 
 Key visualizations include:
+
 1. **Top keyword counts bar chart** - horizontal bar chart showing the 25 most frequent keywords
 2. **Keyword trends over time** - multi-line chart tracking monthly mentions of top 10 keywords
 3. **Correlation heatmap** - lower-triangle matrix with color-coded cells and numerical annotations
@@ -129,6 +133,6 @@ Comparing earlier months (2023) to more recent hearings (2024-2025) revealed shi
 These patterns reflect hearing topics, not necessarily legislative outcomes or the depth of discussion. High-frequency keywords may indicate either sustained important issues or routine procedural oversight. Additionally, our two-year window captures only recent Senate activity; longer-term historical data would be needed to identify multi-year trends or generational shifts in legislative priorities.
 
 **Addressing Our Motivating Questions**:
-This analysis successfully addressed all three of our original research goals. First, we identified **which topics dominate Senate attention** through frequency analysis, revealing budget, agency oversight, and healthcare as persistent priorities. Second, we demonstrated **how Senate discussions respond to external events** through temporal analysis, showing crisis-driven spikes in disaster and international relations keywords alongside predictable seasonal budget patterns. Third, we found **meaningful correlations between topics** using NPMI and Pearson correlation, uncovering thematic clusters (healthcare ecosystem, energy-environment nexus, defense-security grouping) that reveal how policy domains interconnect in legislative oversight. Together, these findings established a quantitative foundation for understanding the Senate's policy attention landscape, revealing both the stable institutional priorities and the dynamic responsiveness to current events that characterize legislative oversight.
+This analysis successfully addressed all three of our original research goals. First, we identified [which topics dominate Senate attention]{.underline} through frequency analysis, revealing budget, agency oversight, and healthcare as persistent priorities. Second, we demonstrated [how Senate discussions respond to external events]{.underline} through temporal analysis, showing crisis-driven spikes in disaster and international relations keywords alongside predictable seasonal budget patterns. Third, we found [meaningful correlations between topics]{.underline} using NPMI and Pearson correlation, uncovering thematic clusters (healthcare ecosystem, energy-environment nexus, defense-security grouping) that reveal how policy domains interconnect in legislative oversight. Together, these findings established a quantitative foundation for understanding the Senate's policy attention landscape, revealing both the stable institutional priorities and the dynamic responsiveness to current events that characterize legislative oversight.
 
 
