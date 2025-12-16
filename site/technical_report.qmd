@@ -1,8 +1,8 @@
 # Technical Analysis
 
-## Why we did what we did?
+## Research question and motivation
 
-Our big motivating question was how topics discussed within the Senate are affect by events in the outside world. We wanted to see what topics were discussed the most is the Senate and see if we could find any correlations or interesting things while analysing it.
+We set out to answer a clear question: [How do U.S. Senate hearing topics shift in response to outside events, which issues dominate the agenda, and which topics tend to travel together?]{.underline} Concretely, we wanted to (1) track which topics receive the most attention, (2) see how attention rises or falls with external events and the legislative calendar, and (3) uncover correlations and clusters of related topics across hearings.
 
 ## Where did the data come from?
 
@@ -54,7 +54,7 @@ This additional cleaning step was necessary because even with our careful KeyBER
 
 Understanding which topics appear together in hearings reveals thematic clusters and policy connections:
 
-**Co-occurrence heatmaps**: We built a matrix showing how often keyword pairs appear in the same hearing. This raw co-occurrence data highlights which topics are naturally linked—for example, "health care" frequently appears alongside "Medicare" and "Medicaid."
+**Co-occurrence heatmaps**: We built a matrix showing how often keyword pairs appear in the same hearing. This raw co-occurrence data highlights which topics are naturally linked. For example, "health care" frequently appears alongside "Medicare" and "Medicaid."
 
 **Correlation analysis (Pearson)**: We computed Pearson correlation coefficients on binary keyword presence (1 if keyword appears in a hearing, 0 otherwise) across the top 10 keywords. This measures linear relationships between keyword occurrences:
 
