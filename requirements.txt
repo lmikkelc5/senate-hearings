@@ -1,2 +1,12 @@
 -e .
-streamlit
+streamlit>=1.41
+seaborn>=0.13.2
+pandas>=2.3.3
+numpy>=2.3.4
+matplotlib
+scipy>=1.16.3
+beautifulsoup4>=4.12.0
+requests>=2.32.5
+selenium>=4.38.0
+playwright>=1.55.0
+pyyaml>=6.0.3
