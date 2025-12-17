@@ -165,6 +165,7 @@ This analysis successfully addressed all three of our original research goals. F
 **Sentiment and Tone Analysis**: Beyond topic identification, analyzing the sentiment and tone of hearing discussions could reveal whether certain issues receive more contentious debate versus consensus treatment, and how this changes over time.
 
 **Practical Recommendations**:
+
 - **For researchers**: Our `senate_hearings` package provides a reusable foundation for congressional text analysis; extending it to House hearings or other legislative bodies would broaden its utility
 - **For policymakers**: The correlation analysis reveals which policy domains naturally interconnect, suggesting opportunities for integrated legislative approaches
 - **For the public**: The Streamlit dashboard demonstrates how complex legislative data can be made accessible; similar tools could increase civic engagement and government transparency
